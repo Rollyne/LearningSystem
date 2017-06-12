@@ -188,6 +188,8 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Blog\BlogAreaRegistration.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -209,6 +211,8 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Blog\Views\web.config" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -231,8 +235,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
@@ -257,6 +259,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Admin\Controllers\" />
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\Shared\" />
+    <Folder Include="Areas\Blog\Controllers\" />
+    <Folder Include="Areas\Blog\Models\" />
+    <Folder Include="Areas\Blog\Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -274,6 +282,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LearningSystem.Data.Common\LearningSystem.Data.Common.csproj">
+      <Project>{E921EE16-E580-46DD-A5B8-8509BF4DCD94}</Project>
+      <Name>LearningSystem.Data.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LearningSystem.Data\LearningSystem.Data.csproj">
       <Project>{93F077F3-9757-4D1F-AF53-37D4A340D8EA}</Project>
       <Name>LearningSystem.Data</Name>
@@ -281,6 +293,10 @@
     <ProjectReference Include="..\LearningSystem.Models\LearningSystem.Models.csproj">
       <Project>{889B0652-99D9-4192-9925-D213ACD605C6}</Project>
       <Name>LearningSystem.Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LearningSystem.Services\LearningSystem.Services.csproj">
+      <Project>{A35F4AC5-508E-477A-9908-9F1818C615E8}</Project>
+      <Name>LearningSystem.Services</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

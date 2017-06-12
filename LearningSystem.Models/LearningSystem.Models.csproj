@@ -82,6 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntityModels\ApplicationUser.cs" />
+    <Compile Include="EntityModels\Article.cs" />
+    <Compile Include="EntityModels\Course.cs" />
+    <Compile Include="EntityModels\Student.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Account\ExternalLoginConfirmationViewModel.cs" />
     <Compile Include="ViewModels\Account\ExternalLoginListViewModel.cs" />

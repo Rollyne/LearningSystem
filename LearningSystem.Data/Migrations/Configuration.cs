@@ -1,3 +1,6 @@
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+
 namespace LearningSystem.Data.Migrations
 {
     using System;
@@ -12,8 +15,20 @@ namespace LearningSystem.Data.Migrations
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(LearningSystem.Data.LearningSystemContext context)
+        protected override void Seed(LearningSystemContext context)
         {
+            var roleStore = new RoleStore<IdentityRole>(context);
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+
+            foreach (var roleName in Constants.Roles)
+            {
+                if (roleManager.Roles.Any(r => r.Name == roleName))
+                {
+                    var role = new IdentityRole(roleName);
+                    roleManager.Create(role);
+                }
+            }
+
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 

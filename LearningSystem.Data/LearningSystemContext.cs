@@ -1,4 +1,5 @@
-﻿using LearningSystem.Models.EntityModels;
+﻿using System.Data.Entity;
+using LearningSystem.Models.EntityModels;
 using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace LearningSystem.Data
@@ -16,5 +17,11 @@ namespace LearningSystem.Data
         {
             return new LearningSystemContext();
         }
+
+        public IDbSet<Student> Studetns { get; set; }
+
+        public IDbSet<Article> Articles { get; set; }
+
+        public IDbSet<Course> Courses { get; set; }
     }
 }

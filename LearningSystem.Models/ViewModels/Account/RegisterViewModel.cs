@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace LearningSystem.Models.ViewModels.Account
 {
     public class RegisterViewModel
     {
+        [Required]
+        [Display(Name="Username")]
+        [StringLength(50, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 3)]
+        public string Username { get; set; }
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -19,5 +25,9 @@ namespace LearningSystem.Models.ViewModels.Account
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [DataType(DataType.Date)]
+        [Display(Name = "Birth date")]
+        public DateTime BirthDate { get; set; }
     }
 }
