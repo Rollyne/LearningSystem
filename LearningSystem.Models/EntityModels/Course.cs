@@ -5,12 +5,15 @@ namespace LearningSystem.Models.EntityModels
 {
     public class Course
     {
-        private ICollection<Student> students;
+        private ICollection<StudentsCourses> students;
 
         public Course()
         {
-            students = new HashSet<Student>();
+            students = new HashSet<StudentsCourses>();
         }
+
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -21,7 +24,7 @@ namespace LearningSystem.Models.EntityModels
 
         public DateTime EndDate { get; set; }
 
-        public virtual ICollection<Student> Students
+        public virtual ICollection<StudentsCourses> StudentsRelationships
         {
             get { return students; }
             set { students = value; }

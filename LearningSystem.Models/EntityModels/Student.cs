@@ -6,11 +6,11 @@ namespace LearningSystem.Models.EntityModels
 {
     public class Student
     {
-        private ICollection<Course> courses;
+        private ICollection<StudentsCourses> courses;
 
         public Student()
         {
-            courses = new HashSet<Course>();
+            courses = new HashSet<StudentsCourses>();
         }
 
         [Key, ForeignKey("User")]
@@ -18,7 +18,7 @@ namespace LearningSystem.Models.EntityModels
 
         public ApplicationUser User { get; set; }
 
-        public virtual ICollection<Course> Courses
+        public virtual ICollection<StudentsCourses> CourseRelationships
         {
             get { return this.courses; }
             set { this.courses = value; }

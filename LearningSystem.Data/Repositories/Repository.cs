@@ -177,6 +177,37 @@ namespace LearningSystem.Data.Repositories
         {
             Context?.Dispose();
         }
+
+        public Tuple<List<TResult>, int> GetAllPaged<TResult>(int itemsPerPage = 0, int page = 0, Expression<Func<TEntity, bool>> @where = null, bool @descending = false,
+            Expression<Func<TEntity, TResult>> @select = null)
+        {
+            IQueryable<TEntity> result = Context.Set<TEntity>();
+
+            if (where != null)
+            {
+                result = result.Where(where);
+            }
+
+            if (itemsPerPage != 0 && page != 0)
+            {
+                var skip = (page - 1) * itemsPerPage;
+                return Tuple.Create(result.Skip(skip).Take(itemsPerPage).Select(select).ToList(), result.Count());
+            }
+
+            return Tuple.Create(result.Select(select).ToList(), result.Count());
+        }
+
+        public ICollection<TResult> GetAll<TResult>(Expression<Func<TEntity, bool>> @where = null, bool @descending = false, Expression<Func<TEntity, TResult>> @select = null)
+        {
+            IQueryable<TEntity> result = Context.Set<TEntity>();
+
+            if (where != null)
+            {
+                result = result.Where(where);
+            }
+
+            return result.Select(select).ToList();
+        }
     }
 }
 

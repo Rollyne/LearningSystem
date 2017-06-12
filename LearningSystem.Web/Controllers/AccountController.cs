@@ -2,8 +2,11 @@
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using LearningSystem.Data;
 using LearningSystem.Models.EntityModels;
 using LearningSystem.Models.ViewModels.Account;
+using LearningSystem.Services;
+using LearningSystem.Web.Controllers.Generic;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -11,7 +14,7 @@ using Microsoft.Owin.Security;
 namespace LearningSystem.Web.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : ServiceController<AccountService<UnitOfWork>>
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -149,12 +152,14 @@ namespace LearningSystem.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email, BirthDate = model.BirthDate};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
+                    UserManager.AddToRole(user.Id, ApplicationConstants.DefaultRole);
+                    Service.AddUserToStudent(user.Id);
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -365,7 +370,7 @@ namespace LearningSystem.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -373,6 +378,9 @@ namespace LearningSystem.Web.Controllers
                     if (result.Succeeded)
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                        UserManager.AddToRole(user.Id, ApplicationConstants.DefaultRole);
+                        Service.AddUserToStudent(user.Id);
+
                         return RedirectToLocal(returnUrl);
                     }
                 }

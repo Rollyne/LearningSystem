@@ -3,7 +3,7 @@
 namespace LearningSystem.Services
 {
     public abstract class Service<TUnitOfWork>
-        where TUnitOfWork : IUnitOfWork, new()
+        where TUnitOfWork : IUnitOfWork
     {
         protected TUnitOfWork unitOfWork;
 

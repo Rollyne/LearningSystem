@@ -23,5 +23,7 @@ namespace LearningSystem.Data
         public IDbSet<Article> Articles { get; set; }
 
         public IDbSet<Course> Courses { get; set; }
+
+        public IDbSet<StudentsCourses> StudentsCourseses { get; set; }
     }
 }
