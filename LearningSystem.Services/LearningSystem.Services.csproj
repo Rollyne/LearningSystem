@@ -55,10 +55,17 @@
   <ItemGroup>
     <Compile Include="AccountService.cs" />
     <Compile Include="ApplicationConstants.cs" />
+    <Compile Include="ArticlesService.cs" />
     <Compile Include="CoursesService.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="HomeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tools\ExecutionResult.cs" />
+    <Compile Include="Tools\Generic\ExecutionResult.cs" />
+    <Compile Include="Tools\Generic\IExecutionResult.cs" />
+    <Compile Include="Tools\IExecutionResult.cs" />
+    <Compile Include="Tools\Messages\CourseMessages.cs" />
+    <Compile Include="Tools\Messages\CrudMessages.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LearningSystem.Data.Common\LearningSystem.Data.Common.csproj">

@@ -11,13 +11,15 @@ namespace LearningSystem.Web.Controllers
     {
         public ActionResult Index(CourseFilterViewModel filter)
         {
-            var model = Service.GetAllCoursesFiltered(filter);
+            var modelPagesPair = Service.GetAllCoursesFiltered(filter);
+            var model = modelPagesPair.Item1;
+            ViewBag.Pages = modelPagesPair.Item2;
             return View(model);
         }
         
         public ActionResult Details(int id)
         {
-            var model = Service.GetById(id);
+            var model = Service.GetById(id, HttpContext.User.Identity.GetUserId());
 
             if (model == null)
                 return HttpNotFound();
@@ -28,9 +30,10 @@ namespace LearningSystem.Web.Controllers
         [Authorize(Roles = "Student")]
         public ActionResult SignUp(int id)
         {
-            if (!Service.SignUpToCourse(id, HttpContext.User.Identity.GetUserId()))
+            var result = Service.SignUpToCourse(id, HttpContext.User.Identity.GetUserId());
+            if (!result.Succeded)
             {
-                ModelState.AddModelError("Unsuccessful signing up", "Couldn't sign up to the course");
+                ModelState.AddModelError("Sign up", result.Message);
             }
             
             return RedirectToAction("Index");
@@ -39,9 +42,10 @@ namespace LearningSystem.Web.Controllers
         [Authorize(Roles = "Student")]
         public ActionResult SignOut(int id)
         {
-            if (!Service.SignOutOfCourse(id, HttpContext.User.Identity.GetUserId()))
+            var result = Service.SignOutOfCourse(id, HttpContext.User.Identity.GetUserId());
+            if (!result.Succeded)
             {
-                ModelState.AddModelError("Unsuccessful signing out", "Couldn't sign out of the course");
+                ModelState.AddModelError("Sign out", result.Message);
             }
 
             return RedirectToAction("Index");

@@ -59,6 +59,10 @@
     <Compile Include="Migrations\201706121941148_InitialEntitiesAndRelationshipsMigration.Designer.cs">
       <DependentUpon>201706121941148_InitialEntitiesAndRelationshipsMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706140812572_NullableBirthDateInAppUserMigration.cs" />
+    <Compile Include="Migrations\201706140812572_NullableBirthDateInAppUserMigration.Designer.cs">
+      <DependentUpon>201706140812572_NullableBirthDateInAppUserMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Repository.cs" />
@@ -81,6 +85,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201706121941148_InitialEntitiesAndRelationshipsMigration.resx">
       <DependentUpon>201706121941148_InitialEntitiesAndRelationshipsMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706140812572_NullableBirthDateInAppUserMigration.resx">
+      <DependentUpon>201706140812572_NullableBirthDateInAppUserMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

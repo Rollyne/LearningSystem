@@ -1,3 +1,4 @@
+using LearningSystem.Models.EntityModels;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -28,6 +29,35 @@ namespace LearningSystem.Data.Migrations
                     roleManager.Create(role);
                 }
             }
+
+            context.Courses.Add(new Course()
+            {
+                Name = "Probaaa1",
+                Description = "Description1",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(15)
+            });
+            context.Courses.Add(new Course()
+            {
+                Name = "Probaaa2",
+                Description = "Description1",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(15)
+            });
+            context.Courses.Add(new Course()
+            {
+                Name = "Probaaa3",
+                Description = "Description1",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(15)
+            });
+            context.Courses.Add(new Course()
+            {
+                Name = "Probaaa4",
+                Description = "Description1",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(15)
+            });
 
             //  This method will be called after migrating to the latest version.
 

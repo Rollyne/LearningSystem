@@ -30,13 +30,6 @@ namespace LearningSystem.Data.Common
             bool descending = false,
             Expression<Func<TEntity, TResult>> select = null);
 
-        Tuple<List<TResult>, int> GetAllPaged<TResult>(
-            int itemsPerPage = 0,
-            int page = 0,
-            Expression<Func<TEntity, bool>> where = null,
-            bool descending = false,
-            Expression<Func<TEntity, TResult>> select = null);
-
         ICollection<TEntity> GetAll<TKey>(
             Expression<Func<TEntity, bool>> where = null,
             Expression<Func<TEntity, TKey>> orderByKeySelector = null,
@@ -56,6 +49,8 @@ namespace LearningSystem.Data.Common
             Expression<Func<TEntity, TResult>> select = null);
 
         int Count();
+
+        bool Any(Expression<Func<TEntity, bool>> any);
 
         void Update(TEntity item);
 

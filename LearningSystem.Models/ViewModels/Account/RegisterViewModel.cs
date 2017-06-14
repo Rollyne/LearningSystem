@@ -28,6 +28,6 @@ namespace LearningSystem.Models.ViewModels.Account
 
         [DataType(DataType.Date)]
         [Display(Name = "Birth date")]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
     }
 }

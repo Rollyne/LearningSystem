@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using LearningSystem.Data.Common;
 using LearningSystem.Models.EntityModels;
 using LearningSystem.Models.ViewModels.Course;
 using LearningSystem.Models.ViewModels.Filtering;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
+using LearningSystem.Services.Tools;
+using LearningSystem.Services.Tools.Messages;
 
 namespace LearningSystem.Services
 {
@@ -49,60 +51,88 @@ namespace LearningSystem.Services
                 where: where,
                 select: c => new CourseIndexViewModel()
                 {
+                    Id = c.Id,
                     Name = c.Name,
                     Description = c.Description,
                     TrainerName = c.Trainer.Name,
                     EndDate = c.EndDate,
                     StartDate = c.StartDate
-                });
+                }, orderByKeySelector: c => c.Id);
 
             return corsesAndPages;
         }
 
-        public CourseDetailsViewModel GetById(int id)
+        public CourseDetailsViewModel GetById(int id, string studentId)
         {
             var course = unitOfWork.GetRepository<Course>()
                 .FirstOrDefault(
                     where: c => c.Id == id,
                     select: c => new CourseDetailsViewModel()
                     {
+                        Id = c.Id,
                         Name = c.Name,
                         Description = c.Description,
                         EndDate = c.EndDate,
                         StartDate = c.StartDate,
                         StudentsCount = c.StudentsRelationships.Count,
-                        TrainerName = c.Trainer.Name
+                        TrainerName = c.Trainer.Name,
+                        IsCurrentUserSignedUp = c.StudentsRelationships.Any(r => r.StudentId == studentId)
                     });
 
             return course;
         }
 
         //TODO: Make it return appropriate message | Consider already signed up
-        public bool SignUpToCourse(int courseId, string studentId)
+        public IExecutionResult SignUpToCourse(int courseId, string studentId)
         {
+            var result = new ExecutionResult();
+
             var courseStartDate = unitOfWork
                 .GetRepository<Course>()
                 .FirstOrDefault(
                     where: c => c.Id == courseId,
                     select: c => c.StartDate);
-
+            
             if (courseStartDate.CompareTo(DateTime.Now) == -1)
             {
-                return false;
+                result.Succeded = false;
+                result.Message = CourseMessages.UnsuccessfulSignUpPassedStartDate();
+                return result;
+            }
+            var relationshipRepo = unitOfWork.GetRepository<StudentsCourses>();
+            if (relationshipRepo.Any(r => r.CourseId == courseId && r.StudentId == studentId))
+            {
+                result.Succeded = false;
+                result.Message = CourseMessages.AlreadySignedUp();
+                return result;
+            }
+            
+            try
+            {
+                relationshipRepo.Add(new StudentsCourses()
+                {
+                    CourseId = courseId,
+                    StudentId = studentId
+                });
+                unitOfWork.Save();
+            }
+            catch(DbException)
+            {
+                result.Succeded = false;
+                result.Message = CourseMessages.UnsuccessfulSignUpDbError();
+
+                return result;
             }
 
-            unitOfWork.GetRepository<StudentsCourses>().Add(new StudentsCourses()
-            {
-                CourseId = courseId,
-                StudentId = studentId
-            });
+            result.Succeded = true;
+            result.Message = CourseMessages.SuccessfulSignUp();
 
-            unitOfWork.Save();
-
-            return true;
+            return result;
         }
-        public bool SignOutOfCourse(int courseId, string studentId)
+        public IExecutionResult SignOutOfCourse(int courseId, string studentId)
         {
+            var result = new ExecutionResult();
+
             var courseStartDate = unitOfWork
                 .GetRepository<Course>()
                 .FirstOrDefault(
@@ -111,20 +141,38 @@ namespace LearningSystem.Services
 
             if (courseStartDate.CompareTo(DateTime.Now) == -1)
             {
-                return false;
+                result.Succeded = false;
+                result.Message = CourseMessages.UnsuccessfulSignUpPassedStartDate();
+                return result;
             }
 
             var relationshipRepo = unitOfWork.GetRepository<StudentsCourses>();
+            if (!relationshipRepo.Any(r => r.CourseId == courseId && r.StudentId == studentId))
+            {
+                result.Succeded = false;
+                result.Message = CourseMessages.NotSignedUp();
+                return result;
+            }
             
             var relationship = relationshipRepo.FirstOrDefault(sc => sc.StudentId == studentId && sc.CourseId == courseId);
-            if (relationship == default(StudentsCourses))
-                return false;
+            try
+            {
+                relationshipRepo.Delete(relationship);
 
-            relationshipRepo.Delete(relationship);
+                unitOfWork.Save();
+            }
+            catch (DbException)
+            {
+                result.Succeded = false;
+                result.Message = CourseMessages.UnsuccessfulSignOutDbError();
 
-            unitOfWork.Save();
+                return result;
+            }
 
-            return true;
+            result.Succeded = true;
+            result.Message = CourseMessages.SuccessfulSignOut();
+
+            return result;
         }
     }
 }
