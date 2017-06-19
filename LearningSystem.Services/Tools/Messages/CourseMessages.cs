@@ -15,5 +15,12 @@
         public static string AlreadySignedUp() => "You have already signed up to this course.";
 
         public static string NotSignedUp() => "You are not signed up to this course.";
+
+        public static string NotFound() => "Couldn't find the course you are looking for.";
+
+        public static string CannotGrade()
+            => "You cannot grade students from this course because you are not a trainer.";
+
+        public static string SuccessfullyGraded() => "You successfully graded this student.";
     }
 }

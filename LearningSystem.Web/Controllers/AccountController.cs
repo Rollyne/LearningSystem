@@ -8,6 +8,7 @@ using LearningSystem.Models.ViewModels.Account;
 using LearningSystem.Services;
 using LearningSystem.Web.Controllers.Generic;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 

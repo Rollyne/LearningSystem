@@ -63,6 +63,10 @@
     <Compile Include="Migrations\201706140812572_NullableBirthDateInAppUserMigration.Designer.cs">
       <DependentUpon>201706140812572_NullableBirthDateInAppUserMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706151358077_StudentsCoursesGradeMigration.cs" />
+    <Compile Include="Migrations\201706151358077_StudentsCoursesGradeMigration.Designer.cs">
+      <DependentUpon>201706151358077_StudentsCoursesGradeMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Repository.cs" />
@@ -88,6 +92,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706140812572_NullableBirthDateInAppUserMigration.resx">
       <DependentUpon>201706140812572_NullableBirthDateInAppUserMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706151358077_StudentsCoursesGradeMigration.resx">
+      <DependentUpon>201706151358077_StudentsCoursesGradeMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,6 +6,8 @@ namespace LearningSystem.Models.ViewModels.Manage
     public class IndexViewModel
     {
         public bool HasPassword { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
         public IList<UserLoginInfo> Logins { get; set; }
         public string PhoneNumber { get; set; }
         public bool TwoFactor { get; set; }

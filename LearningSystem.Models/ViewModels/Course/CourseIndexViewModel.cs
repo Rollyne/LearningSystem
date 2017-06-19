@@ -8,8 +8,6 @@ namespace LearningSystem.Models.ViewModels.Course
 
         public string Name { get; set; }
 
-        public string Description { get; set; }
-
         public string TrainerName { get; set; }
 
         public DateTime StartDate { get; set; }

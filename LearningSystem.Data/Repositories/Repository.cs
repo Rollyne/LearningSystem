@@ -47,7 +47,7 @@ namespace LearningSystem.Data.Repositories
             int itemsPerPage = 0,
             int page = 0,
             Expression<Func<TEntity, bool>> @where = null,
-            Expression<Func<TEntity, TKey>> orderByKeySelector = null,
+            Expression<Func<TEntity, TKey>> orderBy = null,
             bool descending = false)
         {
             IQueryable<TEntity> result = Context.Set<TEntity>();
@@ -56,9 +56,9 @@ namespace LearningSystem.Data.Repositories
             {
                 result = result.Where(where);
             }
-            if (orderByKeySelector != null)
+            if (orderBy != null)
             {
-                result = descending ? result.OrderByDescending(orderByKeySelector) : result.OrderBy(orderByKeySelector);
+                result = descending ? result.OrderByDescending(orderBy) : result.OrderBy(orderBy);
             }
             if (itemsPerPage != 0 && page != 0)
             {
@@ -73,7 +73,7 @@ namespace LearningSystem.Data.Repositories
             int itemsPerPage = 0,
             int page = 0,
             Expression<Func<TEntity, bool>> @where = null,
-            Expression<Func<TEntity, TKey>> orderByKeySelector = null,
+            Expression<Func<TEntity, TKey>> orderBy = null,
             bool descending = false,
             Expression<Func<TEntity, TResult>> @select = null)
         {
@@ -83,9 +83,9 @@ namespace LearningSystem.Data.Repositories
             {
                 result = result.Where(where);
             }
-            if (orderByKeySelector != null)
+            if (orderBy != null)
             {
-                result = descending ? result.OrderByDescending(orderByKeySelector) : result.OrderBy(orderByKeySelector);
+                result = descending ? result.OrderByDescending(orderBy) : result.OrderBy(orderBy);
             }
 
             if (itemsPerPage != 0 && page != 0)
@@ -122,13 +122,13 @@ namespace LearningSystem.Data.Repositories
             return Tuple.Create(result.ToList(), result.Count());
         }
 
-        public ICollection<TEntity> GetAll()
+        public ICollection<TEntity> GetAll(int take = -1)
         {
-            return Context.Set<TEntity>().ToList();
+            return take < 0 ? Context.Set<TEntity>().ToList() : Context.Set<TEntity>().Take(take).ToList();
         }
 
         public ICollection<TEntity> GetAll<TKey>(Expression<Func<TEntity, bool>> @where = null,
-            Expression<Func<TEntity, TKey>> orderByKeySelector = null, bool @descending = false)
+            Expression<Func<TEntity, TKey>> orderByKeySelector = null, bool @descending = false, int take = -1)
         {
             IQueryable<TEntity> result = Context.Set<TEntity>();
 
@@ -141,10 +141,10 @@ namespace LearningSystem.Data.Repositories
                 result = descending ? result.OrderByDescending(orderByKeySelector) : result.OrderBy(orderByKeySelector);
             }
 
-            return result.ToList();
+            return take < 0 ? Context.Set<TEntity>().ToList() : Context.Set<TEntity>().Take(take).ToList();
         }
 
-        public ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>> @where)
+        public ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>> @where, int take = -1)
         {
             IQueryable<TEntity> result = Context.Set<TEntity>();
 
@@ -152,12 +152,12 @@ namespace LearningSystem.Data.Repositories
             {
                 result = result.Where(where);
             }
-            return result.ToList();
+            return take < 0 ? Context.Set<TEntity>().ToList() : Context.Set<TEntity>().Take(take).ToList();
         }
 
         public ICollection<TResult> GetAll<TKey, TResult>(Expression<Func<TEntity, bool>> @where = null,
             Expression<Func<TEntity, TKey>> orderByKeySelector = null,
-            bool @descending = false, Expression<Func<TEntity, TResult>> @select = null)
+            bool @descending = false, Expression<Func<TEntity, TResult>> @select = null, int take = -1)
         {
             IQueryable<TEntity> result = Context.Set<TEntity>();
 
@@ -170,7 +170,7 @@ namespace LearningSystem.Data.Repositories
                 result = descending ? result.OrderByDescending(orderByKeySelector) : result.OrderBy(orderByKeySelector);
             }
 
-            return result.Select(select).ToList();
+            return take < 0 ? Context.Set<TEntity>().Select(select).ToList() : Context.Set<TEntity>().Select(select).Take(take).ToList();
         }
 
         public void Dispose()
@@ -178,7 +178,7 @@ namespace LearningSystem.Data.Repositories
             Context?.Dispose();
         }
 
-        public ICollection<TResult> GetAll<TResult>(Expression<Func<TEntity, bool>> @where = null, bool @descending = false, Expression<Func<TEntity, TResult>> @select = null)
+        public ICollection<TResult> GetAll<TResult>(Expression<Func<TEntity, bool>> @where = null, bool @descending = false, Expression<Func<TEntity, TResult>> @select = null, int take = -1)
         {
             IQueryable<TEntity> result = Context.Set<TEntity>();
 
@@ -187,7 +187,7 @@ namespace LearningSystem.Data.Repositories
                 result = result.Where(where);
             }
 
-            return result.Select(select).ToList();
+            return take < 0 ? Context.Set<TEntity>().Select(select).ToList() : Context.Set<TEntity>().Select(select).Take(take).ToList();
         }
 
         public bool Any(Expression<Func<TEntity, bool>> any)

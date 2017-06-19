@@ -9,6 +9,7 @@ using LearningSystem.Models.EntityModels;
 using LearningSystem.Models.ViewModels.Course;
 using LearningSystem.Models.ViewModels.Filtering;
 using LearningSystem.Services.Tools;
+using LearningSystem.Services.Tools.Generic;
 using LearningSystem.Services.Tools.Messages;
 
 namespace LearningSystem.Services
@@ -25,7 +26,7 @@ namespace LearningSystem.Services
         {
         }
 
-        public Tuple<List<CourseIndexViewModel>, int> GetAllCoursesFiltered(CourseFilterViewModel courseFilter)
+        public IExecutionResult<Tuple<List<CourseIndexViewModel>, int>> GetAllCoursesFiltered(CourseFilterViewModel courseFilter)
         {
             Expression<Func<Course, bool>> where = course => true;
             if (!string.IsNullOrEmpty(courseFilter.Search))
@@ -44,7 +45,7 @@ namespace LearningSystem.Services
                 }
             }
             
-            var corsesAndPages = unitOfWork.GetRepository<Course>()
+            var coursesAndPages = unitOfWork.GetRepository<Course>()
                 .GetAllPaged(
                 page: courseFilter.Page,
                 itemsPerPage: courseFilter.ItemsPerPage == 0 ? ApplicationConstants.DefaultItemsPerPage : courseFilter.ItemsPerPage,
@@ -53,20 +54,26 @@ namespace LearningSystem.Services
                 {
                     Id = c.Id,
                     Name = c.Name,
-                    Description = c.Description,
                     TrainerName = c.Trainer.Name,
                     EndDate = c.EndDate,
                     StartDate = c.StartDate
-                }, orderByKeySelector: c => c.Id);
-
-            return corsesAndPages;
+                }, orderBy: c => c.Id);
+            var result = new ExecutionResult<Tuple<List<CourseIndexViewModel>, int>>()
+            {
+                Result = coursesAndPages,
+                Message = "",
+                Succeded = true
+            };
+            return result;
         }
 
-        public CourseDetailsViewModel GetById(int id, string studentId)
+        public IExecutionResult<CourseDetailsViewModel> GetById(int courseId, string userId)
         {
+            var result = new ExecutionResult<CourseDetailsViewModel>();
+
             var course = unitOfWork.GetRepository<Course>()
                 .FirstOrDefault(
-                    where: c => c.Id == id,
+                    where: c => c.Id == courseId,
                     select: c => new CourseDetailsViewModel()
                     {
                         Id = c.Id,
@@ -76,13 +83,24 @@ namespace LearningSystem.Services
                         StartDate = c.StartDate,
                         StudentsCount = c.StudentsRelationships.Count,
                         TrainerName = c.Trainer.Name,
-                        IsCurrentUserSignedUp = c.StudentsRelationships.Any(r => r.StudentId == studentId)
+                        IsCurrentUserSignedUp = c.StudentsRelationships.Any(r => r.StudentId == userId),
+                        IsCurrentUserTrainer = c.Trainer.Id == userId
                     });
+            if (course == null)
+            {
+                result.Succeded = false;
+                result.Message = CourseMessages.NotFound();
+                result.Result = null;
 
-            return course;
+                return result;
+            }
+            result.Result = course;
+            result.Message = "";
+            result.Succeded = true;
+
+            return result;
         }
 
-        //TODO: Make it return appropriate message | Consider already signed up
         public IExecutionResult SignUpToCourse(int courseId, string studentId)
         {
             var result = new ExecutionResult();
@@ -111,8 +129,10 @@ namespace LearningSystem.Services
             {
                 relationshipRepo.Add(new StudentsCourses()
                 {
+                    StudentId = studentId,
                     CourseId = courseId,
-                    StudentId = studentId
+                    Course = unitOfWork.GetRepository<Course>().FirstOrDefault(c => c.Id == courseId),
+                    Student = unitOfWork.GetRepository<Student>().FirstOrDefault(s => s.Id == studentId)
                 });
                 unitOfWork.Save();
             }
@@ -173,6 +193,58 @@ namespace LearningSystem.Services
             result.Message = CourseMessages.SuccessfulSignOut();
 
             return result;
+        }
+
+        public IExecutionResult<Tuple<List<CourseIndexViewModel>, int>>  GetStudentCourses(string id, int page)
+        {
+            var execution = new ExecutionResult<Tuple<List<CourseIndexViewModel>, int>>();
+
+            var repo = unitOfWork.GetRepository<Course>();
+            execution.Result = repo.GetAllPaged(
+                where: c => c.StudentsRelationships.Any(r => r.StudentId == id),
+                orderBy: c => c.StartDate,
+                select: c => new CourseIndexViewModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    StartDate = c.StartDate,
+                    EndDate = c.EndDate,
+                    TrainerName = c.Trainer.Name
+                },
+                page: page,
+                itemsPerPage: ApplicationConstants.DefaultItemsPerPage
+            );
+
+            execution.Succeded = true;
+
+            return execution;
+        }
+
+        public IExecutionResult GradeStudent(GradeStudentViewModel model, string userId)
+        {
+            var repo = unitOfWork.GetRepository<StudentsCourses>();
+            if (
+                !repo.Any(
+                    r => r.Course.Trainer.Id == userId && r.StudentId == model.StudentId && r.CourseId == model.CourseId))
+            {
+                return new ExecutionResult()
+                {
+                    Succeded = false,
+                    Message = CourseMessages.CannotGrade()
+                };
+            }
+
+            var relationship = repo.FirstOrDefault(where: r => r.StudentId == model.StudentId && r.CourseId == model.CourseId);
+            relationship.Grade = model.Grade;
+
+            repo.Update(relationship);
+            unitOfWork.Save();
+
+            return new ExecutionResult()
+            {
+                Succeded = true,
+                Message = CourseMessages.SuccessfullyGraded()
+            };
         }
     }
 }

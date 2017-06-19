@@ -26,5 +26,7 @@ namespace LearningSystem.Models.ViewModels.Course
         public DateTime EndDate { get; set; }
 
         public bool IsCurrentUserSignedUp { get; set; }
+
+        public bool IsCurrentUserTrainer { get; set; }
     }
 }

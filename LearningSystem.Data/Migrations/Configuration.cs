@@ -23,7 +23,7 @@ namespace LearningSystem.Data.Migrations
 
             foreach (var roleName in Constants.Roles)
             {
-                if (roleManager.Roles.Any(r => r.Name == roleName))
+                if (!roleManager.Roles.Any(r => r.Name == roleName))
                 {
                     var role = new IdentityRole(roleName);
                     roleManager.Create(role);
@@ -34,28 +34,28 @@ namespace LearningSystem.Data.Migrations
             {
                 Name = "Probaaa1",
                 Description = "Description1",
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(5),
                 EndDate = DateTime.Now.AddDays(15)
             });
             context.Courses.Add(new Course()
             {
                 Name = "Probaaa2",
                 Description = "Description1",
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(5),
                 EndDate = DateTime.Now.AddDays(15)
             });
             context.Courses.Add(new Course()
             {
                 Name = "Probaaa3",
                 Description = "Description1",
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(5),
                 EndDate = DateTime.Now.AddDays(15)
             });
             context.Courses.Add(new Course()
             {
                 Name = "Probaaa4",
                 Description = "Description1",
-                StartDate = DateTime.Now,
+                StartDate = DateTime.Now.AddDays(5),
                 EndDate = DateTime.Now.AddDays(15)
             });
 

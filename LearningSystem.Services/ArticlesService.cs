@@ -2,6 +2,7 @@
 using LearningSystem.Data.Common;
 using LearningSystem.Models.EntityModels;
 using LearningSystem.Models.ViewModels.Article;
+using LearningSystem.Services.Tools.Generic;
 
 namespace LearningSystem.Services
 {
@@ -17,9 +18,29 @@ namespace LearningSystem.Services
         {
         }
 
-        public IEnumerable<ArticleIndexViewModel> GetTheNewest(int count)
+        public IExecutionResult<IEnumerable<ArticleIndexViewModel>> GetTheNewest(int count)
         {
-            return null;
+            var repo = unitOfWork.GetRepository<Article>();
+            var result = repo.GetAll(
+                take:count,
+                orderByKeySelector: a => a.PublishDate,
+                descending: true,
+                select: a => new ArticleIndexViewModel()
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    PublishDate = a.PublishDate,
+                    AuthorName = a.Author.Name
+                });
+
+            var execution = new ExecutionResult<IEnumerable<ArticleIndexViewModel>>()
+            {
+                Succeded = true,
+                Message = "",
+                Result = result
+            };
+
+            return execution;
         }
 
     }

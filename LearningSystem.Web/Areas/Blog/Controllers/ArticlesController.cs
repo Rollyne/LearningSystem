@@ -1,14 +1,22 @@
 ﻿using System.Web.Mvc;
+using LearningSystem.Data;
+using LearningSystem.Services;
+using LearningSystem.Web.Controllers.Generic;
 
 namespace LearningSystem.Web.Areas.Blog.Controllers
 {
     [Authorize]
-    public class ArticlesController : Controller
+    public class ArticlesController : ServiceController<ArticlesService<UnitOfWork>>
     {
         // GET: Blog/Articles
         public ActionResult Index()
         {
-            return View();
+            var execution = Service.GetTheNewest(3);
+            if (!execution.Succeded)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            return View(execution.Result);
         }
 
         // GET: Blog/Articles/Details/5

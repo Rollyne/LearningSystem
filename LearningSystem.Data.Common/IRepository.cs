@@ -9,7 +9,7 @@ namespace LearningSystem.Data.Common
     {
         void Add(TEntity item);
 
-        ICollection<TEntity> GetAll();
+        ICollection<TEntity> GetAll(int take = -1);
 
         Tuple<List<TEntity>, int> GetAllPaged(int itemsPerPage = 0,
             int page = 0,
@@ -19,34 +19,37 @@ namespace LearningSystem.Data.Common
             int itemsPerPage = 0,
             int page = 0,
             Expression<Func<TEntity, bool>> where = null,
-            Expression<Func<TEntity, TKey>> orderByKeySelector = null,
+            Expression<Func<TEntity, TKey>> orderBy = null,
             bool descending = false);
 
         Tuple<List<TResult>, int> GetAllPaged<TKey, TResult>(
             int itemsPerPage = 0,
             int page = 0,
             Expression<Func<TEntity, bool>> where = null,
-            Expression<Func<TEntity, TKey>> orderByKeySelector = null,
+            Expression<Func<TEntity, TKey>> orderBy = null,
             bool descending = false,
             Expression<Func<TEntity, TResult>> select = null);
 
         ICollection<TEntity> GetAll<TKey>(
             Expression<Func<TEntity, bool>> where = null,
             Expression<Func<TEntity, TKey>> orderByKeySelector = null,
-            bool descending = false);
+            bool descending = false,
+            int take = -1);
 
-        ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>> where);
+        ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>> where, int take = -1);
 
         ICollection<TResult> GetAll<TKey, TResult>(
             Expression<Func<TEntity, bool>> where = null,
             Expression<Func<TEntity, TKey>> orderByKeySelector = null,
             bool descending = false,
-            Expression<Func<TEntity, TResult>> select = null);
+            Expression<Func<TEntity, TResult>> select = null,
+            int take = -1);
 
         ICollection<TResult> GetAll<TResult>(
             Expression<Func<TEntity, bool>> where = null,
             bool descending = false,
-            Expression<Func<TEntity, TResult>> select = null);
+            Expression<Func<TEntity, TResult>> select = null,
+            int take = -1);
 
         int Count();
 
