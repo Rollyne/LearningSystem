@@ -1,67 +1,66 @@
 ﻿@model LearningSystem.Models.ViewModels.Course.GradeStudentViewModel
 
-
+@using (Html.BeginForm("GradeStudent", "Courses", FormMethod.Post, new {id = "gradeStudentForm"}))
+{
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>GradeStudentViewModel</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger", id = "validationSummary"})
 
-        @Html.HiddenFor(model => model.CourseId, htmlAttributes: new { @class = "form-control", id = "courseId" })
+        @Html.HiddenFor(model => model.CourseId, htmlAttributes: new {@class = "form-control", id = "courseId"})
         <div class="form-group">
-            @Html.LabelFor(model => model.StudentId, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.StudentId, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.StudentId, new { htmlAttributes = new { @class = "form-control", id = "studentId" } })
-                @Html.ValidationMessageFor(model => model.StudentId, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.StudentId, new {htmlAttributes = new {@class = "form-control", id = "studentId"}})
+                @Html.ValidationMessageFor(model => model.StudentId, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Grade, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Grade, htmlAttributes: new {@class = "control-label col-md-2"})
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Grade, new { htmlAttributes = new { @class = "form-control", id = "grade" } })
-                @Html.ValidationMessageFor(model => model.Grade, "", new { @class = "text-danger"})
+                @Html.EditorFor(model => model.Grade, new {htmlAttributes = new {@class = "form-control", id = "grade"}})
+                @Html.ValidationMessageFor(model => model.Grade, "", new {@class = "text-danger"})
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="button" id="gradeStudent" value="Grade" class="btn btn-default" />
+                <input type="button" id="gradeStudent" value="Grade" class="btn btn-default"/>
             </div>
         </div>
     </div>
-
+}
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
     
 }
 @Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/jqueryval")
+
 <script>
     $('#gradeStudent').click(function (e) {
         e.preventDefault();
-        console.log("in");
         let data = {
-            CourseId: $('#courseId').val().trim(),
-            StudentId: $('#studentId').val().trim(),
-            Grade: $('#grade').val()
+            "CourseId": $('#courseId').val().trim(),
+            "StudentId": $('#studentId').val().trim(),
+            "Grade": $('#grade').val()
         };
-
         $.ajax({
             type: "POST",
             url: "http://localhost:60654/Courses/GradeStudent",
-            content: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSON.stringify(data),
-            success: function (d) {
-                if (d.success == true)
-                    alert("Success");
-                else { }
+            data: data,
+            success: function (response) {
+                if (response.Success == 'false') {
+                    alert("Error");
+                }
+                    
+                
             },
             error: function (xhr, textStatus, errorThrown) {
-                alert(errorThrown);
+                alert(textStatus);
             }
         });
-        console.log("out");
     });
 </script>

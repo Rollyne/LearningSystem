@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using LearningSystem.Data;
 using LearningSystem.Models.ViewModels.Course;
@@ -86,6 +87,10 @@ namespace LearningSystem.Web.Controllers
         [Authorize(Roles = "Trainer")]
         public JsonResult GradeStudent(GradeStudentViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return Json($"'Success':'false', 'Error' : '{string.Join(", ", ModelState.Values.SelectMany(v => v.Errors))}'");
+            }
             var result = Service.GradeStudent(model, HttpContext.User.Identity.GetUserId());
 
             return Json(!result.Succeded ? $"'Success':'false','Error':'{result.Message}'" : "'Success':'true'");
