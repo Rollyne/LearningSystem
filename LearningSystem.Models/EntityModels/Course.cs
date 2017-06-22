@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LearningSystem.Models.EntityModels
 {
@@ -18,6 +19,8 @@ namespace LearningSystem.Models.EntityModels
 
         public string Description { get; set; }
 
+        [ForeignKey("Trainer")]
+        public string TrainerId { get; set; }
         public ApplicationUser Trainer { get; set; }
 
         public DateTime StartDate { get; set; }

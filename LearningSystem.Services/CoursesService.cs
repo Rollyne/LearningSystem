@@ -67,7 +67,7 @@ namespace LearningSystem.Services
             return result;
         }
 
-        public IExecutionResult<CourseDetailsViewModel> GetById(int courseId, string userId)
+        public IExecutionResult<CourseDetailsViewModel> GetDetails(int courseId, string userId)
         {
             var result = new ExecutionResult<CourseDetailsViewModel>();
 
@@ -223,14 +223,37 @@ namespace LearningSystem.Services
         public IExecutionResult GradeStudent(GradeStudentViewModel model, string userId)
         {
             var repo = unitOfWork.GetRepository<StudentsCourses>();
-            if (
-                !repo.Any(
-                    r => r.Course.Trainer.Id == userId && r.StudentId == model.StudentId && r.CourseId == model.CourseId))
+            var checks = repo.FirstOrDefault(
+                where: r => r.StudentId == model.StudentId && r.CourseId == model.CourseId,
+                select: r => new
+            {
+                IsTrainer = r.Course.Trainer.Id == userId,
+                CourseEndDate = r.Course.EndDate
+            });
+            if (checks == null)
             {
                 return new ExecutionResult()
                 {
                     Succeded = false,
-                    Message = CourseMessages.CannotGrade()
+                    Message = CourseMessages.CannotGradeNotSignedUp()
+                };
+            }
+
+            if (!checks.IsTrainer)
+            {
+                return new ExecutionResult()
+                {
+                    Succeded = false,
+                    Message = CourseMessages.NotTrainerInCourse()
+                };
+            }
+
+            if (checks.CourseEndDate.CompareTo(DateTime.Now) > 0)
+            {
+                return new ExecutionResult()
+                {
+                    Succeded = false,
+                    Message = CourseMessages.CannotGradeEndDateHasntPassed()
                 };
             }
 
@@ -244,6 +267,97 @@ namespace LearningSystem.Services
             {
                 Succeded = true,
                 Message = CourseMessages.SuccessfullyGraded()
+            };
+        }
+
+        public IExecutionResult AddNewCourse(CourseModifyViewModel model)
+        {
+            var repo = unitOfWork.GetRepository<Course>();
+
+            var course = new Course()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                EndDate = model.EndDate,
+                StartDate = model.StartDate,
+                TrainerId = model.TrainerId
+            };
+
+            repo.Add(course);
+            unitOfWork.Save();
+
+            return new ExecutionResult()
+            {
+                Succeded = true,
+                Message = CrudMessages.SuccessfulCreationOf("course")
+            };
+        }
+
+        public IExecutionResult<CourseModifyViewModel> GetByIdForModification(int id)
+        {
+            var repo = unitOfWork.GetRepository<Course>();
+
+            var result = new ExecutionResult<CourseModifyViewModel>
+            {
+                Succeded = false
+            };
+
+            var item = repo.FirstOrDefault(where: c => c.Id == id,
+                select: c => new CourseModifyViewModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    EndDate = c.EndDate,
+                    StartDate = c.StartDate,
+                    TrainerId = c.TrainerId
+                });
+            if (item == null)
+            {
+                result.Message = CourseMessages.NotFound();
+                result.Result = null;
+                return result;
+            }
+
+            result.Succeded = true;
+            result.Result = item;
+
+            return result;
+        }
+
+        public IExecutionResult Update(CourseModifyViewModel model)
+        {
+            var repo = unitOfWork.GetRepository<Course>();
+
+            var course = new Course()
+            {
+                Name = model.Name,
+                Description = model.Description,
+                EndDate = model.EndDate,
+                StartDate = model.StartDate,
+                TrainerId = model.TrainerId
+            };
+
+            repo.Update(course);
+            unitOfWork.Save();
+
+            return new ExecutionResult()
+            {
+                Succeded = true,
+                Message = CrudMessages.SuccessfulCreationOf("course")
+            };
+        }
+
+        public IExecutionResult Delete(int id)
+        {
+            var repo = unitOfWork.GetRepository<Course>();
+
+            repo.Delete(repo.FirstOrDefault(c => c.Id == id));
+            unitOfWork.Save();
+            return new ExecutionResult()
+            {
+                Succeded = true,
+                Message = CrudMessages.SuccessfulCreationOf("course")
             };
         }
     }

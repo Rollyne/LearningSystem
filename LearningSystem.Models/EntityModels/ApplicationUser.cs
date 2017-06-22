@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
@@ -15,6 +16,8 @@ namespace LearningSystem.Models.EntityModels
             // Add custom user claims here
             return userIdentity;
         }
+
+        public string CUsername { get; set; }
 
         public string Name { get; set; }
 

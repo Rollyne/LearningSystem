@@ -29,7 +29,7 @@ namespace LearningSystem.Web.Controllers
         
         public ActionResult Details(int id)
         {
-            var execution = Service.GetById(id, HttpContext.User.Identity.GetUserId());
+            var execution = Service.GetDetails(id, HttpContext.User.Identity.GetUserId());
 
             if (!execution.Succeded)
                 return HttpNotFound();
@@ -89,10 +89,10 @@ namespace LearningSystem.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Json($"'Success':'false', 'Error' : '{string.Join(", ", ModelState.Values.SelectMany(v => v.Errors))}'");
+                return Json("'Success':'false', 'Error' : 'Invalid grade information! Grades should be between 2 and 6.'");
             }
             var result = Service.GradeStudent(model, HttpContext.User.Identity.GetUserId());
-
+            
             return Json(!result.Succeded ? $"'Success':'false','Error':'{result.Message}'" : "'Success':'true'");
         }
     }

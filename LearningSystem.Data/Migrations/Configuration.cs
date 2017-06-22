@@ -30,6 +30,29 @@ namespace LearningSystem.Data.Migrations
                 }
             }
 
+
+            var userStore = new UserStore<ApplicationUser>(context);
+            var userManager = new UserManager<ApplicationUser>(userStore);
+            var user = new ApplicationUser { CUsername = "Administrator", Email = "admin@abv.bg", UserName = "admin@abv.bg" };
+            
+            if (!userManager.Users.Any(u => u.Email == user.Email && u.UserName == user.UserName))
+            {
+                var result = userManager.Create(user, "Administrator123#");
+                if (!result.Succeeded)
+                {
+                    throw new Exception("Could not create administrator account");   
+                }
+            }
+
+            var adminId = userManager.Users.FirstOrDefault(u => u.Email == user.Email && u.UserName == user.UserName).Id;
+            if (!userManager.IsInRole(adminId, "Administrator"))
+            {
+                userManager.AddToRole(adminId, "Administrator");
+            }
+            
+           
+            
+
             context.Courses.Add(new Course()
             {
                 Name = "Probaaa1",

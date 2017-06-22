@@ -16,10 +16,14 @@
 
         public static string NotSignedUp() => "You are not signed up to this course.";
 
+        public static string CannotGradeNotSignedUp() => "You are not signed up to this course.";
+
+        public static string NotTrainerInCourse() => "You are not a trainer in this course.";
+
         public static string NotFound() => "Couldn't find the course you are looking for.";
 
-        public static string CannotGrade()
-            => "You cannot grade students from this course because you are not a trainer.";
+        public static string CannotGradeEndDateHasntPassed()
+            => "You cannot grade students from this course because the end date has not passed yet.";
 
         public static string SuccessfullyGraded() => "You successfully graded this student.";
     }

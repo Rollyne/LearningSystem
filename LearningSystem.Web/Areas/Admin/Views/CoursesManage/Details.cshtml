@@ -1,0 +1,83 @@
+﻿@model LearningSystem.Models.ViewModels.Course.CourseDetailsViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>CourseDetailsViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TrainerName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TrainerName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StudentsCount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StudentsCount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsCurrentUserSignedUp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsCurrentUserSignedUp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsCurrentUserTrainer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsCurrentUserTrainer)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
