@@ -1,6 +1,6 @@
 ﻿namespace LearningSystem.Models.ViewModels.Filtering
 {
-    public class CourseFilterViewModel
+    public class CourseFilterViewModel : IPagerFilter
     {
         public string Search { get; set; }
 

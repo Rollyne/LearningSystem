@@ -58,6 +58,7 @@
 
         <div class="form-actions no-color">
             @Html.HiddenFor(model => model.Id)
+            @Html.Hidden("returnUrl", Request.Url.PathAndQuery)
             <input type="submit" value="Delete" class="btn btn-default"/> |
             @Html.ActionLink("Back to List", "Index")
         </div>

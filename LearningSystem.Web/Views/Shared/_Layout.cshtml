@@ -26,7 +26,8 @@
                     <li>@Html.ActionLink("Articles", "Index", "Articles")</li>
                     @if (HttpContext.Current.User.IsInRole("Administrator"))
                     {
-                        <li>@Html.ActionLink("Manage Courses","Index", "CoursesManage", new {Area = "Admin"}, new { })</li>
+                        <li>@Html.ActionLink("Manage Courses", "Index", "CoursesManage", new { Area = "Admin" }, new { })</li>
+                        <li>@Html.ActionLink("Manage Users","Index", "Users", new {Area = "Admin"}, new { })</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")

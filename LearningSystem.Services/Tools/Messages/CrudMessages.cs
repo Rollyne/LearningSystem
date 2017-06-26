@@ -6,5 +6,7 @@
 
         public static string UnsuccessfulCreationOf(string item = "item")
             => $"The {item} wasn't be created successfully. There is a server problem.";
+
+        public static string NotFound(string item = "item") => $"This {item} was not found.";
     }
 }

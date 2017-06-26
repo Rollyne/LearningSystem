@@ -14,7 +14,7 @@ namespace LearningSystem.Web.Controllers
     {
         public ActionResult Index(CourseFilterViewModel filter)
         {
-            var execution = Service.GetAllCoursesFiltered(filter);
+            var execution = Service.GetAllFiltered(filter);
 
             if (!execution.Succeded)
                 return HttpNotFound();

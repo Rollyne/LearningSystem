@@ -99,11 +99,14 @@
     <Compile Include="ViewModels\Account\VerifyCodeViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticleDetailsViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticleIndexViewModel.cs" />
+    <Compile Include="ViewModels\Course\CourseAdminDetailsViewModel.cs" />
     <Compile Include="ViewModels\Course\CourseModifyViewModel.cs" />
     <Compile Include="ViewModels\Course\CourseDetailsViewModel.cs" />
     <Compile Include="ViewModels\Course\CourseIndexViewModel.cs" />
     <Compile Include="ViewModels\Course\GradeStudentViewModel.cs" />
     <Compile Include="ViewModels\Filtering\CourseFilterViewModel.cs" />
+    <Compile Include="ViewModels\Filtering\IPagerFilter.cs" />
+    <Compile Include="ViewModels\Filtering\UserFilterViewModel.cs" />
     <Compile Include="ViewModels\Manage\AddPhoneNumberViewModel.cs" />
     <Compile Include="ViewModels\Manage\ChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\Manage\ConfigureTwoFactorViewModel.cs" />
@@ -112,6 +115,8 @@
     <Compile Include="ViewModels\Manage\ManageLoginsViewModel.cs" />
     <Compile Include="ViewModels\Manage\SetPasswordViewModel.cs" />
     <Compile Include="ViewModels\Manage\VerifyPhoneNumberViewModel.cs" />
+    <Compile Include="ViewModels\User\UserDetailsViewModel.cs" />
+    <Compile Include="ViewModels\User\UserIndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

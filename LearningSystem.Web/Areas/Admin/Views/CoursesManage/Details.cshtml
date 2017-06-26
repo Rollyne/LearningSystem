@@ -57,27 +57,9 @@
         <dd>
             @Html.DisplayFor(model => model.EndDate)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsCurrentUserSignedUp)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsCurrentUserSignedUp)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsCurrentUserTrainer)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsCurrentUserTrainer)
-        </dd>
-
     </dl>
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
