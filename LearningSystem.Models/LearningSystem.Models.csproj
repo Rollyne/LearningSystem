@@ -98,7 +98,9 @@
     <Compile Include="ViewModels\Account\SendCodeViewModel.cs" />
     <Compile Include="ViewModels\Account\VerifyCodeViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticleDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Filtering\ArticleFilterViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticleIndexViewModel.cs" />
+    <Compile Include="ViewModels\Article\ArticleModifyViewModel.cs" />
     <Compile Include="ViewModels\Course\CourseAdminDetailsViewModel.cs" />
     <Compile Include="ViewModels\Course\CourseModifyViewModel.cs" />
     <Compile Include="ViewModels\Course\CourseDetailsViewModel.cs" />

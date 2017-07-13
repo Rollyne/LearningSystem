@@ -7,6 +7,7 @@ using LearningSystem.Data.Common;
 using LearningSystem.Models.EntityModels;
 using LearningSystem.Models.ViewModels.Course;
 using LearningSystem.Models.ViewModels.Filtering;
+using LearningSystem.Models.ViewModels.User;
 using LearningSystem.Services.Generic;
 using LearningSystem.Services.Tools;
 using LearningSystem.Services.Tools.Generic;
@@ -293,6 +294,51 @@ namespace LearningSystem.Services
                 };
 
             return base.getDetails(where: c => c.Id == courseId, select: query);
+        }
+
+        public IExecutionResult<CourseDetailsViewModel> GetDetails(int courseId)
+        {
+            Expression<Func<Course, CourseDetailsViewModel>> query =
+                c => new CourseDetailsViewModel()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    EndDate = c.EndDate,
+                    StartDate = c.StartDate,
+                    TrainerName = c.Trainer.Name,
+                    StudentsCount = c.StudentsRelationships.Count
+                };
+
+            return base.getDetails(where: c => c.Id == courseId, select: query);
+        }
+
+        public IExecutionResult<ICollection<UserIndexViewModel>> GetStudents(int id)
+        {
+            var repo = unitOfWork.GetRepository<StudentsCourses>();
+            var coursesRepo = unitOfWork.GetRepository<Course>();
+
+            var execution = new ExecutionResult<ICollection<UserIndexViewModel>>()
+            {
+                Succeded = false
+            };
+
+            if (!coursesRepo.Any(c => c.Id == id))
+            {
+                execution.Message = CrudMessages.NotFound("course");
+            }
+
+            var result = repo.GetAll(where: r => r.CourseId == id, orderByKeySelector: i => i.StudentId,
+                select: r => new UserIndexViewModel
+                {
+                    CUsername = r.Student.User.CUsername,
+                    Id = r.StudentId,
+                    Name = r.Student.User.Name
+                });
+
+            execution.Result = result;
+
+            return execution;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LearningSystem.Models.EntityModels
 {
@@ -15,6 +16,8 @@ namespace LearningSystem.Models.EntityModels
         [DataType(DataType.DateTime)]
         public DateTime PublishDate { get; set; }
 
+        [ForeignKey("Author")]
+        public string AuthorId { get; set; }
         [Display(Name = "Author")]
         public ApplicationUser Author { get; set; }
     }
