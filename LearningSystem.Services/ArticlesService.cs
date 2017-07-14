@@ -6,6 +6,7 @@ using LearningSystem.Models.EntityModels;
 using LearningSystem.Models.ViewModels.Article;
 using LearningSystem.Models.ViewModels.Filtering;
 using LearningSystem.Services.Generic;
+using LearningSystem.Services.Tools;
 using LearningSystem.Services.Tools.Generic;
 using LearningSystem.Services.Tools.Messages;
 
@@ -60,41 +61,44 @@ namespace LearningSystem.Services
             });
         }
 
-        protected override Article ParseModifyViewModelToEntity(ArticleModifyViewModel model)
+        public override IExecutionResult Create(ArticleModifyViewModel model)
         {
-            return new Article()
+            model.PublishDate = DateTime.Now;
+
+            return base.Create(model);
+        }
+
+        public IExecutionResult Update(ArticleModifyViewModel model, string currentLoggedUserId)
+        {
+            if (model.AuthorId == currentLoggedUserId)
             {
-                Content = model.Content,
-                Id = model.Id.Value,
-                Title = model.Title
+                return base.Update(model);
+            }
+
+            return new ExecutionResult()
+            {
+                Succeded = false,
+                Message = GlobalMessages.NoAccess("article")
             };
         }
 
-        protected override Expression<Func<Article, ArticleIndexViewModel>> SelectIndexViewModelQuery =>
-            i => new ArticleIndexViewModel()
-            {
-                Id = i.Id,
-                PublishDate = i.PublishDate,
-                AuthorName = i.Author.Name,
-                Title = i.Title
-            };
+        public IExecutionResult Delete(int id, string currentLoggedUserId)
+        {
+            var repo = unitOfWork.GetRepository<Article>();
+            var item = repo.FirstOrDefault(i => i.Id == id);
 
-        protected override Expression<Func<Article, ArticleDetailsViewModel>> SelectDetailsViewModelQuery =>
-            i => new ArticleDetailsViewModel()
+            if (item.AuthorId == currentLoggedUserId)
             {
-                Id = i.Id,
-                AuthorName = i.Author.Name,
-                Content = i.Content,
-                PublishDate = i.PublishDate,
-                Title = i.Title
-            };
-        protected override Expression<Func<Article, ArticleModifyViewModel>> SelectModifyViewModelQuery =>
-            i => new ArticleModifyViewModel()
+                return base.Delete(item);
+            }
+
+            return new ExecutionResult()
             {
-                Id = i.Id,
-                Content = i.Content,
-                Title = i.Title
+                Succeded = false,
+                Message = GlobalMessages.NoAccess("article")
             };
+        }
+
         public override IExecutionResult<Tuple<List<ArticleIndexViewModel>, int>> GetAllFiltered(ArticleFilterViewModel filter)
         {
             return base.getAllFiltered(filter: filter, where: i => true, order: i => i.Id);

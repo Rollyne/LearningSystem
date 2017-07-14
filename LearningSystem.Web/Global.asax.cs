@@ -2,6 +2,7 @@
 using System.Web.Routing;
 using System.Web.Mvc;
 using System.Web.Optimization;
+using LearningSystem.Models.Mapper;
 
 namespace LearningSystem.Web
 {
@@ -14,6 +15,7 @@ namespace LearningSystem.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             GlobalConfiguration.Configure(WebApiConfig.Register);
+            AutoMapperModelsConfiguration.Configure();
         }
     }
 }

@@ -19,18 +19,11 @@ namespace LearningSystem.Services.Generic
         {
         }
 
-        protected abstract TEntity ParseModifyViewModelToEntity(TModifyViewModel model);
-        protected abstract Expression<Func<TEntity, TIndexViewModel>> SelectIndexViewModelQuery { get; }
-
-        protected abstract Expression<Func<TEntity, TDetailsViewModel>> SelectDetailsViewModelQuery { get; }
-
-        protected abstract Expression<Func<TEntity, TModifyViewModel>> SelectModifyViewModelQuery { get; }
-
-        public IExecutionResult Create(TModifyViewModel model)
+        public virtual IExecutionResult Create(TModifyViewModel model)
         {
             var repo = unitOfWork.GetRepository<TEntity>();
 
-            var item = ParseModifyViewModelToEntity(model);
+            var item = AutoMapper.Mapper.Map<TModifyViewModel, TEntity>(model);
 
             repo.Add(item);
             unitOfWork.Save();
@@ -60,11 +53,10 @@ namespace LearningSystem.Services.Generic
         protected IExecutionResult<Tuple<List<TIndexViewModel>, int>> getAllFiltered<TKey>(TFilterViewModel filter, Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> order)
         {
             var itemsAndPages = unitOfWork.GetRepository<TEntity>()
-                .GetAllPaged(
+                .GetAllPaged<TKey, TIndexViewModel>(
                 page: filter.Page,
                 itemsPerPage: filter.ItemsPerPage == 0 ? ApplicationConstants.DefaultItemsPerPage : filter.ItemsPerPage,
                 where: where,
-                select: SelectIndexViewModelQuery,
                 orderBy: order);
             var result = new ExecutionResult<Tuple<List<TIndexViewModel>, int>>()
             {
@@ -84,8 +76,7 @@ namespace LearningSystem.Services.Generic
                 Succeded = false
             };
 
-            var item = repo.FirstOrDefault(where: where,
-                select: SelectModifyViewModelQuery);
+            var item = repo.FirstOrDefault<TModifyViewModel>(where: where);
             if (item == null)
             {
                 result.Message = CrudMessages.NotFound();
@@ -103,10 +94,20 @@ namespace LearningSystem.Services.Generic
         {
             var result = new ExecutionResult<TDetailsViewModel>();
 
-            var item = unitOfWork.GetRepository<TEntity>()
+            TDetailsViewModel item = default(TDetailsViewModel);
+            if (select == null)
+            {
+                item = unitOfWork.GetRepository<TEntity>()
+                .FirstOrDefault<TDetailsViewModel>(
+                    where: where);
+            }
+            else
+            {
+                item = unitOfWork.GetRepository<TEntity>()
                 .FirstOrDefault(
                     where: where,
-                    select: select ?? SelectDetailsViewModelQuery);
+                    select: select);
+            }
             if (item == null)
             {
                 result.Succeded = false;
@@ -122,11 +123,11 @@ namespace LearningSystem.Services.Generic
             return result;
         }
 
-        public IExecutionResult Update(TModifyViewModel model)
+        public virtual IExecutionResult Update(TModifyViewModel model)
         {
             var repo = unitOfWork.GetRepository<TEntity>();
 
-            var item = ParseModifyViewModelToEntity(model);
+            var item = AutoMapper.Mapper.Map<TModifyViewModel, TEntity>(model);
 
             repo.Update(item);
             unitOfWork.Save();

@@ -15,5 +15,7 @@ namespace LearningSystem.Models.ViewModels.Article
 
         [Display(Name ="Author")]
         public string AuthorName { get; set; }
+
+        public string AuthorId { get; set; }
     }
 }

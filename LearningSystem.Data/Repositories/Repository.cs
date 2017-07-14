@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Linq.Expressions;
+using AutoMapper.QueryableExtensions;
 using LearningSystem.Data.Common;
 
 namespace LearningSystem.Data.Repositories
@@ -43,12 +44,7 @@ namespace LearningSystem.Data.Repositories
             return Context.Set<TEntity>().Count();
         }
 
-        public Tuple<List<TEntity>, int> GetAllPaged<TKey>(
-            int itemsPerPage = 0,
-            int page = 0,
-            Expression<Func<TEntity, bool>> @where = null,
-            Expression<Func<TEntity, TKey>> orderBy = null,
-            bool descending = false)
+        private IQueryable<TEntity> _getAllWhere(Expression<Func<TEntity, bool>> @where)
         {
             IQueryable<TEntity> result = Context.Set<TEntity>();
 
@@ -56,10 +52,34 @@ namespace LearningSystem.Data.Repositories
             {
                 result = result.Where(where);
             }
+
+            return result;
+        }
+
+        private IQueryable<TEntity> _getAllWhereAndOrder<TKey>(
+            Expression<Func<TEntity, bool>> @where,
+            Expression<Func<TEntity, TKey>> orderBy,
+            bool descending
+            )
+        {
+            IQueryable<TEntity> result = _getAllWhere(where);
             if (orderBy != null)
             {
                 result = descending ? result.OrderByDescending(orderBy) : result.OrderBy(orderBy);
             }
+
+            return result;
+        }
+
+        public Tuple<List<TEntity>, int> GetAllPaged<TKey>(
+            int itemsPerPage = 0,
+            int page = 0,
+            Expression<Func<TEntity, bool>> @where = null,
+            Expression<Func<TEntity, TKey>> orderBy = null,
+            bool descending = false)
+        {
+            IQueryable<TEntity> result = _getAllWhereAndOrder(where, orderBy, descending);
+
             if (itemsPerPage != 0 && page != 0)
             {
                 var skip = (page - 1) * itemsPerPage;
@@ -70,23 +90,14 @@ namespace LearningSystem.Data.Repositories
         }
 
         public Tuple<List<TResult>, int> GetAllPaged<TKey, TResult>(
+            Expression<Func<TEntity, TResult>> @select,
             int itemsPerPage = 0,
             int page = 0,
             Expression<Func<TEntity, bool>> @where = null,
             Expression<Func<TEntity, TKey>> orderBy = null,
-            bool descending = false,
-            Expression<Func<TEntity, TResult>> @select = null)
+            bool descending = false)
         {
-            IQueryable<TEntity> result = Context.Set<TEntity>();
-
-            if (where != null)
-            {
-                result = result.Where(where);
-            }
-            if (orderBy != null)
-            {
-                result = descending ? result.OrderByDescending(orderBy) : result.OrderBy(orderBy);
-            }
+            IQueryable<TEntity> result = _getAllWhereAndOrder(where, orderBy, descending);
 
             if (itemsPerPage != 0 && page != 0)
             {
@@ -103,7 +114,7 @@ namespace LearningSystem.Data.Repositories
         }
 
         public TResult FirstOrDefault<TResult>(Expression<Func<TEntity, bool>> @where,
-            Expression<Func<TEntity, TResult>> @select = null)
+            Expression<Func<TEntity, TResult>> @select)
         {
             return Context.Set<TEntity>().Where(where).Select(select).FirstOrDefault();
         }
@@ -111,12 +122,8 @@ namespace LearningSystem.Data.Repositories
         public Tuple<List<TEntity>, int> GetAllPaged(int itemsPerPage = 0, int page = 0,
             Expression<Func<TEntity, bool>> @where = null)
         {
-            IQueryable<TEntity> result = Context.Set<TEntity>();
+            IQueryable<TEntity> result = _getAllWhere(where);
 
-            if (where != null)
-            {
-                result = result.Where(where);
-            }
             if (itemsPerPage != 0 && page != 0)
                 return Tuple.Create(result.Skip((page - 1) * itemsPerPage).Take(itemsPerPage).ToList(), result.Count());
             return Tuple.Create(result.ToList(), result.Count());
@@ -130,45 +137,24 @@ namespace LearningSystem.Data.Repositories
         public ICollection<TEntity> GetAll<TKey>(Expression<Func<TEntity, bool>> @where = null,
             Expression<Func<TEntity, TKey>> orderByKeySelector = null, bool @descending = false, int take = -1)
         {
-            IQueryable<TEntity> result = Context.Set<TEntity>();
-
-            if (where != null)
-            {
-                result = result.Where(where);
-            }
-            if (orderByKeySelector != null)
-            {
-                result = descending ? result.OrderByDescending(orderByKeySelector) : result.OrderBy(orderByKeySelector);
-            }
+            IQueryable<TEntity> result = _getAllWhereAndOrder(where, orderByKeySelector, descending);
 
             return take < 0 ? Context.Set<TEntity>().ToList() : Context.Set<TEntity>().Take(take).ToList();
         }
 
         public ICollection<TEntity> GetAll(Expression<Func<TEntity, bool>> @where, int take = -1)
         {
-            IQueryable<TEntity> result = Context.Set<TEntity>();
+            IQueryable<TEntity> result = _getAllWhere(where);
 
-            if (where != null)
-            {
-                result = result.Where(where);
-            }
             return take < 0 ? Context.Set<TEntity>().ToList() : Context.Set<TEntity>().Take(take).ToList();
         }
 
-        public ICollection<TResult> GetAll<TKey, TResult>(Expression<Func<TEntity, bool>> @where = null,
+        public ICollection<TResult> GetAll<TKey, TResult>(Expression<Func<TEntity, TResult>> @select,
+            Expression<Func<TEntity, bool>> @where = null,
             Expression<Func<TEntity, TKey>> orderByKeySelector = null,
-            bool @descending = false, Expression<Func<TEntity, TResult>> @select = null, int take = -1)
+            bool @descending = false, int take = -1)
         {
-            IQueryable<TEntity> result = Context.Set<TEntity>();
-
-            if (where != null)
-            {
-                result = result.Where(where);
-            }
-            if (orderByKeySelector != null)
-            {
-                result = descending ? result.OrderByDescending(orderByKeySelector) : result.OrderBy(orderByKeySelector);
-            }
+            IQueryable<TEntity> result = _getAllWhereAndOrder(where, orderByKeySelector, descending);
 
             return take < 0 ? Context.Set<TEntity>().Select(select).ToList() : Context.Set<TEntity>().Select(select).Take(take).ToList();
         }
@@ -178,14 +164,9 @@ namespace LearningSystem.Data.Repositories
             Context?.Dispose();
         }
 
-        public ICollection<TResult> GetAll<TResult>(Expression<Func<TEntity, bool>> @where = null, bool @descending = false, Expression<Func<TEntity, TResult>> @select = null, int take = -1)
+        public ICollection<TResult> GetAll<TResult>(Expression<Func<TEntity, TResult>> @select, Expression<Func<TEntity, bool>> @where = null, int take = -1)
         {
-            IQueryable<TEntity> result = Context.Set<TEntity>();
-
-            if (where != null)
-            {
-                result = result.Where(where);
-            }
+            IQueryable<TEntity> result = _getAllWhere(where);
 
             return take < 0 ? Context.Set<TEntity>().Select(select).ToList() : Context.Set<TEntity>().Select(select).Take(take).ToList();
         }
@@ -193,6 +174,40 @@ namespace LearningSystem.Data.Repositories
         public bool Any(Expression<Func<TEntity, bool>> any)
         {
             return Context.Set<TEntity>().Any(any);
+        }
+
+        public ICollection<TResult> GetAll<TKey, TResult>(Expression<Func<TEntity, bool>> @where = null, Expression<Func<TEntity, TKey>> orderByKeySelector = null,
+            bool @descending = false, int take = -1)
+        {
+            IQueryable<TEntity> result = _getAllWhereAndOrder(where, orderByKeySelector, descending);
+
+            return take < 0 ? Context.Set<TEntity>().ProjectTo<TResult>().ToList() : Context.Set<TEntity>().ProjectTo<TResult>().Take(take).ToList();
+        }
+
+        public ICollection<TResult> GetAll<TResult>(Expression<Func<TEntity, bool>> @where = null, int take = -1)
+        {
+            IQueryable<TEntity> result = _getAllWhere(where);
+
+            return take < 0 ? Context.Set<TEntity>().ProjectTo<TResult>().ToList() : Context.Set<TEntity>().ProjectTo<TResult>().Take(take).ToList();
+        }
+
+        public TResult FirstOrDefault<TResult>(Expression<Func<TEntity, bool>> @where)
+        {
+            return Context.Set<TEntity>().Where(where).ProjectTo<TResult>().FirstOrDefault();
+        }
+
+        public Tuple<List<TResult>, int> GetAllPaged<TKey, TResult>(int itemsPerPage = 0, int page = 0, Expression<Func<TEntity, bool>> @where = null, Expression<Func<TEntity, TKey>> orderBy = null,
+            bool @descending = false)
+        {
+            IQueryable<TEntity> result = _getAllWhereAndOrder(where, orderBy, descending);
+
+            if (itemsPerPage != 0 && page != 0)
+            {
+                var skip = (page - 1) * itemsPerPage;
+                return Tuple.Create(result.Skip(skip).Take(itemsPerPage).ProjectTo<TResult>().ToList(), result.Count());
+            }
+
+            return Tuple.Create(result.ProjectTo<TResult>().ToList(), result.Count());
         }
     }
 }

@@ -23,7 +23,7 @@
                 <ul class="nav navbar-nav">
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("Courses", "Index", "Courses")</li>
-                    <li>@Html.ActionLink("Articles", "Index", "Articles")</li>
+                    <li>@Html.ActionLink("Articles", "Index", "Articles", new {Area = "Blog"}, new {})</li>
                     @if (HttpContext.Current.User.IsInRole("Administrator"))
                     {
                         <li>@Html.ActionLink("Manage Courses", "Index", "CoursesManage", new { Area = "Admin" }, new { })</li>

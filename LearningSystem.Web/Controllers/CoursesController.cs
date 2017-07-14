@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Web.Mvc;
 using LearningSystem.Data;
-using LearningSystem.Models.ViewModels.Course;
 using LearningSystem.Models.ViewModels.Filtering;
+using LearningSystem.Models.ViewModels.StudentsCourses;
 using LearningSystem.Services;
 using LearningSystem.Web.Controllers.Generic;
 using Microsoft.AspNet.Identity;

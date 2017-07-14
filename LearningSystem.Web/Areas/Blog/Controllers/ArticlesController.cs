@@ -3,6 +3,7 @@ using LearningSystem.Data;
 using LearningSystem.Models.ViewModels.Article;
 using LearningSystem.Services;
 using LearningSystem.Web.Controllers.Generic;
+using Microsoft.AspNet.Identity;
 
 namespace LearningSystem.Web.Areas.Blog.Controllers
 {
@@ -35,24 +36,28 @@ namespace LearningSystem.Web.Areas.Blog.Controllers
 
         [Authorize(Roles = "BlogAuthor")]
         // GET: Blog/Articles/Create
-        public ActionResult Create(ArticleModifyViewModel model)
+        public ActionResult Create()
         {
-            var execution = Service.Create(model);
-            if (!execution.Succeded)
-            {
-                return View();
-            }
-            return RedirectToAction("Index");
+            return View();
         }
 
         // POST: Blog/Articles/Create
         [Authorize(Roles = "BlogAuthor")]
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(ArticleModifyViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
             try
             {
-                // TODO: Add insert logic here
+                model.AuthorId = HttpContext.User.Identity.GetUserId();
+                var execution = Service.Create(model);
+                if (!execution.Succeded)
+                {
+                    return View();
+                }
 
                 return RedirectToAction("Index");
             }
@@ -72,11 +77,15 @@ namespace LearningSystem.Web.Areas.Blog.Controllers
         // POST: Blog/Articles/Edit/5
         [HttpPost]
         [Authorize(Roles = "BlogAuthor")]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(ArticleModifyViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
             try
             {
-                // TODO: Add update logic here
+                Service.Update(model, HttpContext.User.Identity.GetUserId());
 
                 return RedirectToAction("Index");
             }
@@ -86,21 +95,14 @@ namespace LearningSystem.Web.Areas.Blog.Controllers
             }
         }
 
-        // GET: Blog/Articles/Delete/5
-        [Authorize(Roles = "BlogAuthor")]
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
         // POST: Blog/Articles/Delete/5
         [HttpPost]
         [Authorize(Roles = "BlogAuthor")]
-        public ActionResult Delete(int id, FormCollection collection)
+        public ActionResult Delete(int id)
         {
             try
             {
-                // TODO: Add delete logic here
+                Service.Delete(id, HttpContext.User.Identity.GetUserId());
 
                 return RedirectToAction("Index");
             }

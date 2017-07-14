@@ -7,6 +7,7 @@ using LearningSystem.Data.Common;
 using LearningSystem.Models.EntityModels;
 using LearningSystem.Models.ViewModels.Course;
 using LearningSystem.Models.ViewModels.Filtering;
+using LearningSystem.Models.ViewModels.StudentsCourses;
 using LearningSystem.Models.ViewModels.User;
 using LearningSystem.Services.Generic;
 using LearningSystem.Services.Tools;
@@ -210,52 +211,6 @@ namespace LearningSystem.Services
             return base.Delete(repo.FirstOrDefault(where: c => c.Id == id));
         }
 
-        protected override Course ParseModifyViewModelToEntity(CourseModifyViewModel model)
-        {
-            return new Course()
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Id = model.Id.Value,
-                EndDate = model.EndDate,
-                StartDate = model.StartDate,
-                TrainerId = model.TrainerId
-            };
-        }
-
-        protected override Expression<Func<Course, CourseIndexViewModel>> SelectIndexViewModelQuery =>
-            c => new CourseIndexViewModel()
-            {
-                Id = c.Id,
-                Name = c.Name,
-                TrainerName = c.Trainer.Name,
-                StartDate = c.StartDate,
-                EndDate = c.EndDate
-            };
-
-        protected override Expression<Func<Course, CourseDetailsViewModel>> SelectDetailsViewModelQuery =>
-            c => new CourseDetailsViewModel()
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Description = c.Description,
-                EndDate = c.EndDate,
-                StartDate = c.StartDate,
-                TrainerName = c.Trainer.Name,
-                StudentsCount = c.StudentsRelationships.Count
-            };
-
-        protected override Expression<Func<Course, CourseModifyViewModel>> SelectModifyViewModelQuery =>
-            c => new CourseModifyViewModel()
-            {
-                Name = c.Name,
-                Description = c.Description,
-                EndDate = c.EndDate,
-                Id = c.Id,
-                StartDate = c.StartDate,
-                TrainerId = c.TrainerId
-            };
-
         public override IExecutionResult<Tuple<List<CourseIndexViewModel>, int>> GetAllFiltered(CourseFilterViewModel courseFilter)
         {
             Expression<Func<Course, bool>> where = course => true;
@@ -279,21 +234,7 @@ namespace LearningSystem.Services
 
         public IExecutionResult<CourseDetailsViewModel> GetDetails(int courseId, string userId)
         {
-            Expression<Func<Course, CourseDetailsViewModel>> query =
-                c => new CourseDetailsViewModel()
-                {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Description = c.Description,
-                    EndDate = c.EndDate,
-                    StartDate = c.StartDate,
-                    TrainerName = c.Trainer.Name,
-                    StudentsCount = c.StudentsRelationships.Count,
-                    IsCurrentUserSignedUp = c.StudentsRelationships.Any(r => r.StudentId == userId),
-                    IsCurrentUserTrainer = c.TrainerId == userId
-                };
-
-            return base.getDetails(where: c => c.Id == courseId, select: query);
+            return base.getDetails(where: c => c.Id == courseId);
         }
 
         public IExecutionResult<CourseDetailsViewModel> GetDetails(int courseId)

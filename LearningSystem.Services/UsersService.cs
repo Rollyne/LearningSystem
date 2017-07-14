@@ -10,41 +10,11 @@ using LearningSystem.Services.Tools.Generic;
 
 namespace LearningSystem.Services
 {
-    public class UsersService<TUnitOfWork> : CrudService< TUnitOfWork ,ApplicationUser, UserIndexViewModel, UserDetailsViewModel, UserFilterViewModel, ApplicationUser>
+    public class UsersService<TUnitOfWork> : Service<TUnitOfWork>
         where TUnitOfWork : IUnitOfWork, new()
     {
         public UsersService() : base(new TUnitOfWork())
         {
-        }
-
-        protected override ApplicationUser ParseModifyViewModelToEntity(ApplicationUser model)
-        {
-            return model;
-        }
-
-        protected override Expression<Func<ApplicationUser, UserIndexViewModel>> SelectIndexViewModelQuery =>
-            i => new UserIndexViewModel()
-            {
-                Id = i.Id,
-                CUsername = i.CUsername,
-                Name = i.Id
-            };
-
-        protected override Expression<Func<ApplicationUser, UserDetailsViewModel>> SelectDetailsViewModelQuery =>
-            i => new UserDetailsViewModel()
-            {
-                Id = i.Id,
-                Email = i.Email,
-                CUsername = i.CUsername,
-                Name = i.Name,
-                BirthDate = i.BirthDate
-            };
-
-        protected override Expression<Func<ApplicationUser, ApplicationUser>> SelectModifyViewModelQuery =>
-            i => i;
-        public override IExecutionResult<Tuple<List<UserIndexViewModel>, int>> GetAllFiltered(UserFilterViewModel filter)
-        {
-            return base.getAllFiltered(filter, where: i => true, order: i => i.Id);
         }
     }
 }

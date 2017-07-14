@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace LearningSystem.Models.ViewModels.Course
+namespace LearningSystem.Models.ViewModels.StudentsCourses
 {
     public class GradeStudentViewModel
     {
