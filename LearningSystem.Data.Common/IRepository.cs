@@ -34,7 +34,8 @@ namespace LearningSystem.Data.Common
             int page = 0,
             Expression<Func<TEntity, bool>> where = null,
             Expression<Func<TEntity, TKey>> orderBy = null,
-            bool descending = false);
+            bool descending = false,
+            object mapperParameters = null);
 
         ICollection<TEntity> GetAll<TKey>(
             Expression<Func<TEntity, bool>> where = null,
@@ -55,7 +56,8 @@ namespace LearningSystem.Data.Common
             Expression<Func<TEntity, bool>> where = null,
             Expression<Func<TEntity, TKey>> orderByKeySelector = null,
             bool descending = false,
-            int take = -1);
+            int take = -1,
+            object mapperParameters = null);
 
         ICollection<TResult> GetAll<TResult>(
             Expression<Func<TEntity, TResult>> select,
@@ -64,7 +66,8 @@ namespace LearningSystem.Data.Common
 
         ICollection<TResult> GetAll<TResult>(
             Expression<Func<TEntity, bool>> where = null,
-            int take = -1);
+            int take = -1,
+            object mapperParameters = null);
 
         int Count();
 
@@ -83,6 +86,7 @@ namespace LearningSystem.Data.Common
             );
 
         TResult FirstOrDefault<TResult>(
-            Expression<Func<TEntity, bool>> where);
+            Expression<Func<TEntity, bool>> where,
+            object mapperParameters = null);
     }
 }

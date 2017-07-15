@@ -5,60 +5,35 @@
 }
 
 <h2>Index</h2>
+@{
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.TrainerName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.EndDate)
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TrainerName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.StartDate)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.EndDate)
-        </td>
-        <td>
-            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-        </td>
-    </tr>
+    var itemsPerPage = Request["ItemsPerPage"];
+    var search = Request["Search"];
+    var searchInName = Request["SearchInName"];
+    var searchInDescription = Request["SearchInDescription"];
 }
-</table>
-<ul class="pagination">
-    @{
-        var itemsPerPage = Request["ItemsPerPage"];
+@Html.Action("_SearchPartial", "Courses", new
+{
+    ItemsPerPage = itemsPerPage,
+    SearchInDescription = searchInDescription,
+    Search = search,
+    SearchInName = searchInName
+})
 
-        for (int i = 1; i <= ViewBag.Pages; i++)
-        {
-            if ((int)ViewBag.CurrentPage == i)
-            {
-                <li class="active">@Html.ActionLink(i.ToString(), "Index", "Courses", new { Page = i, ItemsPerPage = itemsPerPage }, new {})</li>
-            }
-            else
-            {
-                <li>@Html.ActionLink(i.ToString(), "Index", "Courses", new { Page = i, ItemsPerPage = itemsPerPage }, new { })</li>
-            }
+<div id="coursesList">
+    @Html.Action("_CoursesListPartial", new
+{
+    ItemsPerPage = itemsPerPage,
+    SearchInDescription = searchInDescription,
+    Search = search,
+    SearchInName = searchInName
+})
+</div>
 
-        }
-    }
-    
-</ul>   
+@Html.Action("_PaginationPartial", new
+{
+    ItemsPerPage = itemsPerPage,
+    SearchInDescription = searchInDescription,
+    Search = search,
+    SearchInName = searchInName
+})

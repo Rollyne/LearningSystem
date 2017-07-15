@@ -11,7 +11,12 @@ namespace LearningSystem.Web.Controllers
 {
     public class CoursesController : ServiceController<CoursesService<UnitOfWork>>
     {
-        public ActionResult Index(CourseFilterViewModel filter)
+        public ActionResult Index()
+        {
+            return View();
+        }
+        
+        public ActionResult _CoursesListPartial(CourseFilterViewModel filter)
         {
             var execution = Service.GetAllFiltered(filter);
 
@@ -19,13 +24,25 @@ namespace LearningSystem.Web.Controllers
                 return HttpNotFound();
 
             var model = execution.Result.Item1;
-            var itemsPerPage = filter.ItemsPerPage == 0 ? ApplicationConstants.DefaultItemsPerPage : filter.ItemsPerPage;
-            ViewBag.Pages = Math.Ceiling((double)execution.Result.Item2 / itemsPerPage);
-            ViewBag.CurrentPage = filter.Page == 0 ? 1 : filter.Page;
+            var itemsPerPage = filter.ItemsPerPage ?? ApplicationConstants.DefaultItemsPerPage;
+            TempData["Pages"] = Math.Ceiling((double)execution.Result.Item2 / itemsPerPage);
+            TempData["CurrentPage"] = filter.Page == 0 ? 1 : filter.Page;
 
-            return View(model);
+            return PartialView("_CoursesListPartial", model);
         }
-        
+
+        [HttpGet]
+        public ActionResult _SearchPartial(CourseFilterViewModel model)
+        {
+            return PartialView("_SearchPartial", model ?? new CourseFilterViewModel());
+        }
+
+        [HttpGet]
+        public ActionResult _PaginationPartial(CourseFilterViewModel model)
+        {
+            return PartialView("_PaginationPartial", model ?? new CourseFilterViewModel());
+        }
+
         public ActionResult Details(int id)
         {
             var execution = Service.GetDetails(id, HttpContext.User.Identity.GetUserId());
@@ -41,10 +58,14 @@ namespace LearningSystem.Web.Controllers
             var result = Service.SignUpToCourse(id, HttpContext.User.Identity.GetUserId());
             if (!result.Succeded)
             {
-                ModelState.AddModelError("Sign up", result.Message);
+                AddError(result.Message);
+            }
+            else
+            {
+                AddMessage(result.Message);
             }
             
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new {id});
         }
 
         [Authorize(Roles = "Student")]
@@ -53,10 +74,13 @@ namespace LearningSystem.Web.Controllers
             var result = Service.SignOutOfCourse(id, HttpContext.User.Identity.GetUserId());
             if (!result.Succeded)
             {
-                ModelState.AddModelError("Sign out", result.Message);
+                AddError(result.Message);
             }
-
-            return RedirectToAction("Index");
+            else
+            {
+                AddMessage(result.Message);
+            }
+            return RedirectToAction("Details", new {id});
         }
 
         [ChildActionOnly]
@@ -94,5 +118,6 @@ namespace LearningSystem.Web.Controllers
             
             return Json(!result.Succeded ? $"'Success':'false','Error':'{result.Message}'" : "'Success':'true'");
         }
+
     }
 }

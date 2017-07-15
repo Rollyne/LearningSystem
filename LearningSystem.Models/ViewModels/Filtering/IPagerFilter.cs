@@ -2,7 +2,7 @@
 {
     public interface IPagerFilter
     {
-        int ItemsPerPage { get; set; }
+        int? ItemsPerPage { get; set; }
         int Page { get; set; }
     }
 }

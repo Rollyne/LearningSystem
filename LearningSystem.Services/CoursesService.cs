@@ -59,7 +59,7 @@ namespace LearningSystem.Services
                 {
                     StudentId = studentId,
                     CourseId = courseId,
-                    Course = unitOfWork.GetRepository<Course>().FirstOrDefault(c => c.Id == courseId),
+                    Course = unitOfWork.GetRepository<Course>().FirstOrDefault(@where: c => c.Id == courseId),
                     Student = unitOfWork.GetRepository<Student>().FirstOrDefault(s => s.Id == studentId)
                 });
                 unitOfWork.Save();
@@ -216,15 +216,15 @@ namespace LearningSystem.Services
             Expression<Func<Course, bool>> where = course => true;
             if (!string.IsNullOrEmpty(courseFilter.Search))
             {
-                if (courseFilter.SearchInDescription && courseFilter.SearchInName)
+                if ((courseFilter.SearchInDescription ?? false) && (courseFilter.SearchInName ?? false))
                 {
                     where = c => c.Name.Contains(courseFilter.Search) || c.Description.Contains(courseFilter.Search);
                 }
-                else if (courseFilter.SearchInDescription)
+                else if (courseFilter.SearchInDescription ?? false)
                 {
                     where = c => c.Description.Contains(courseFilter.Search);
                 }
-                else if (courseFilter.SearchInName)
+                else if (courseFilter.SearchInName ?? false)
                 {
                     where = c => c.Name.Contains(courseFilter.Search);
                 }
@@ -234,7 +234,7 @@ namespace LearningSystem.Services
 
         public IExecutionResult<CourseDetailsViewModel> GetDetails(int courseId, string userId)
         {
-            return base.getDetails(where: c => c.Id == courseId);
+            return base.getDetails(where: c => c.Id == courseId, mapperParameters: new { currentUserId = userId});
         }
 
         public IExecutionResult<CourseDetailsViewModel> GetDetails(int courseId)

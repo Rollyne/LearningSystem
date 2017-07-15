@@ -1,0 +1,40 @@
+﻿@model LearningSystem.Models.ViewModels.Filtering.CourseFilterViewModel
+
+<ul class="pagination">
+    @{
+        for (int i = 1; i <= int.Parse(TempData["Pages"].ToString()); i++)
+        {
+            if ((int)TempData["CurrentPage"] == i)
+            {
+
+                <li class="active">
+                    @Ajax.ActionLink(i.ToString(), "_CoursesListPartial", new
+                              {
+                                  Page = i, Model.ItemsPerPage, Model.SearchInDescription, Model.Search, Model.SearchInName
+                              }, new AjaxOptions()
+                              {
+                                  HttpMethod = "GET",
+                                  UpdateTargetId = "coursesList",
+                                  InsertionMode = InsertionMode.Replace
+                              })
+            </li>
+            }
+            else
+            {
+                <li>
+                    @Ajax.ActionLink(i.ToString(), "_CoursesListPartial", new
+               {
+                   Page = i, Model.ItemsPerPage, Model.SearchInDescription, Model.Search, Model.SearchInName
+               }, new AjaxOptions()
+               {
+                   HttpMethod = "GET",
+                   UpdateTargetId = "coursesList",
+                   InsertionMode = InsertionMode.Replace
+               })
+            </li>
+            }
+
+        }
+    }
+
+</ul>   

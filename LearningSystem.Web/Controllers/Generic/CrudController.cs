@@ -25,7 +25,7 @@ namespace LearningSystem.Web.Controllers.Generic
                 return HttpNotFound();
 
             var model = execution.Result.Item1;
-            var itemsPerPage = filter.ItemsPerPage == 0 ? ApplicationConstants.DefaultItemsPerPage : filter.ItemsPerPage;
+            var itemsPerPage = filter.ItemsPerPage ?? ApplicationConstants.DefaultItemsPerPage;
             ViewBag.Pages = Math.Ceiling((double)execution.Result.Item2 / itemsPerPage);
             ViewBag.CurrentPage = filter.Page == 0 ? 1 : filter.Page;
 

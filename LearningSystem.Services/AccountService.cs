@@ -17,7 +17,12 @@ namespace LearningSystem.Services
 
         public void AddUserToStudent(string userId)
         {
-            unitOfWork.GetRepository<Student>().Add(new Student(){Id = userId});
+            var repo = unitOfWork.GetRepository<Student>();
+
+            if (repo.Any(i => i.Id == userId))
+                return;
+
+            repo.Add(new Student() { Id = userId });
             unitOfWork.Save();
         }
     }

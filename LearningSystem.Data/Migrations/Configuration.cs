@@ -49,8 +49,26 @@ namespace LearningSystem.Data.Migrations
             {
                 userManager.AddToRole(adminId, "Administrator");
             }
-            
-           
+            if (!userManager.IsInRole(adminId, "BlogAuthor"))
+            {
+                userManager.AddToRole(adminId, "BlogAuthor");
+            }
+            if (!userManager.IsInRole(adminId, "Trainer"))
+            {
+                userManager.AddToRole(adminId, "Trainer");
+            }
+            if (!userManager.IsInRole(adminId, "Student"))
+            {
+                userManager.AddToRole(adminId, "Student");
+            }
+
+
+            if (!context.Students.Any(i => i.Id == adminId))
+            {
+                context.Students.Add(new Student() { Id = adminId });
+                context.SaveChanges();
+            }
+
             
 
             context.Courses.Add(new Course()
@@ -81,19 +99,6 @@ namespace LearningSystem.Data.Migrations
                 StartDate = DateTime.Now.AddDays(5),
                 EndDate = DateTime.Now.AddDays(15)
             });
-
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
         }
     }
 }

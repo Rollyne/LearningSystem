@@ -18,7 +18,7 @@ namespace LearningSystem.Data
             return new LearningSystemContext();
         }
 
-        public IDbSet<Student> Studetns { get; set; }
+        public IDbSet<Student> Students { get; set; }
 
         public IDbSet<Article> Articles { get; set; }
 

@@ -55,7 +55,7 @@ namespace LearningSystem.Services.Generic
             var itemsAndPages = unitOfWork.GetRepository<TEntity>()
                 .GetAllPaged<TKey, TIndexViewModel>(
                 page: filter.Page,
-                itemsPerPage: filter.ItemsPerPage == 0 ? ApplicationConstants.DefaultItemsPerPage : filter.ItemsPerPage,
+                itemsPerPage: filter.ItemsPerPage ?? ApplicationConstants.DefaultItemsPerPage,
                 where: where,
                 orderBy: order);
             var result = new ExecutionResult<Tuple<List<TIndexViewModel>, int>>()
@@ -90,7 +90,7 @@ namespace LearningSystem.Services.Generic
             return result;
         }
         
-        protected IExecutionResult<TDetailsViewModel> getDetails(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TDetailsViewModel>> select = null)
+        protected IExecutionResult<TDetailsViewModel> getDetails(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TDetailsViewModel>> select = null, object mapperParameters = null)
         {
             var result = new ExecutionResult<TDetailsViewModel>();
 
@@ -99,7 +99,8 @@ namespace LearningSystem.Services.Generic
             {
                 item = unitOfWork.GetRepository<TEntity>()
                 .FirstOrDefault<TDetailsViewModel>(
-                    where: where);
+                    where: where,
+                    mapperParameters: mapperParameters);
             }
             else
             {
