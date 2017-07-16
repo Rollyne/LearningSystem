@@ -49,15 +49,15 @@ namespace LearningSystem.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public ActionResult _SearchPartial(CourseFilterViewModel model)
+        public ActionResult _SearchPartial(UserFilterViewModel model)
         {
-            return PartialView("_SearchPartial", model ?? new CourseFilterViewModel());
+            return PartialView("_SearchPartial", model ?? new UserFilterViewModel());
         }
 
         [HttpGet]
-        public ActionResult _PaginationPartial(CourseFilterViewModel model)
+        public ActionResult _PaginationPartial(UserFilterViewModel model)
         {
-            return PartialView("_PaginationPartial", model ?? new CourseFilterViewModel());
+            return PartialView("_PaginationPartial", model ?? new UserFilterViewModel());
         }
 
         public async Task<ActionResult> Details(string id)

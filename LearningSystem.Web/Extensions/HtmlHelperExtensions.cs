@@ -16,10 +16,6 @@ namespace LearningSystem.Web.Extensions
             {
                 tag.Attributes.Add("checked", "checked");
             }
-            else
-            {
-                tag.Attributes.Add("checked", "unchecked");
-            }
 
             if (htmlAttributes != null)
             {

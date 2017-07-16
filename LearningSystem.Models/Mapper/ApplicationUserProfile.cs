@@ -8,7 +8,10 @@ namespace LearningSystem.Models.Mapper
     {
         public ApplicationUserProfile()
         {
-            CreateMap<ApplicationUser, UserDetailsViewModel>();
+            CreateMap<ApplicationUser, UserDetailsViewModel>()
+                .ForMember(dest => dest.Roles, opt => opt.Ignore());
+            CreateMap<ApplicationUser, UserIndexViewModel>();
+
         }
     }
 }

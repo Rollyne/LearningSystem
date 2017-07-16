@@ -24,10 +24,47 @@ namespace LearningSystem.Services
 
         public override IExecutionResult<Tuple<List<UserIndexViewModel>, int>> GetAllFiltered(UserFilterViewModel filter)
         {
-            Expression<Func<ApplicationUser, bool>> where = course => true;
+            Expression<Func<ApplicationUser, bool>> where = i => true;
             if (!string.IsNullOrEmpty(filter.Search))
             {
-                //TODO: Search logic
+                if ((filter.SearchInEmail ?? false) &&
+                    (filter.SearchInUsername ?? false) &&
+                    (filter.SearchInName ?? false))
+                {
+                    where = i =>
+                            i.Email.Contains(filter.Search) ||
+                            i.CUsername.Contains(filter.Search) ||
+                            i.Name.Contains(filter.Search);
+                }
+                else if ((filter.SearchInEmail ?? false) && (filter.SearchInUsername ?? false))
+                {
+                    where = i =>
+                        i.Email.Contains(filter.Search) ||
+                        i.CUsername.Contains(filter.Search);
+                }
+                else if ((filter.SearchInUsername ?? false) && (filter.SearchInName ?? false))
+                {
+                    where = i => i.CUsername.Contains(filter.Search) ||
+                            i.Name.Contains(filter.Search);
+                }
+                else if ((filter.SearchInEmail ?? false) && (filter.SearchInName ?? false))
+                {
+                    where = i =>
+                            i.Email.Contains(filter.Search) ||
+                            i.Name.Contains(filter.Search);
+                }
+                else if (filter.SearchInEmail ?? false)
+                {
+                    where = i => i.Email.Contains(filter.Search);
+                }
+                else if (filter.SearchInName ?? false)
+                {
+                    where = i => i.Name.Contains(filter.Search);
+                }
+                else
+                {
+                    where = i => i.CUsername.Contains(filter.Search);
+                }
             }
             return base.getAllFiltered(where: where, filter: filter, order: c => c.Id);
         }

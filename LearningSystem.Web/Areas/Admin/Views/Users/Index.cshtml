@@ -15,10 +15,10 @@
             SearchInName = Request["SearchInName"]
     };
 }
-@Html.Action("_SearchPartial", "Courses", filter)
+@Html.Action("_SearchPartial", "Users", filter)
 
-<div id="coursesList">
+<div id="usersList">
     @Html.Action("_UsersListPartial", filter)
 </div>
 
-@Html.Action("_PaginationPartial", filter)
+@Html.Action("_PaginationPartial", "Users", filter)
