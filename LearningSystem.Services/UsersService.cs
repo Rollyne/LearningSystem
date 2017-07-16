@@ -10,11 +10,26 @@ using LearningSystem.Services.Tools.Generic;
 
 namespace LearningSystem.Services
 {
-    public class UsersService<TUnitOfWork> : Service<TUnitOfWork>
+    public class UsersService<TUnitOfWork> : ReadService<TUnitOfWork, UserDetailsViewModel, UserIndexViewModel, UserFilterViewModel, ApplicationUser>
         where TUnitOfWork : IUnitOfWork, new()
     {
         public UsersService() : base(new TUnitOfWork())
         {
+        }
+
+        public IExecutionResult<UserDetailsViewModel> GetDetails(string id)
+        {
+            return base.getDetails(where: u => u.Id == id);
+        }
+
+        public override IExecutionResult<Tuple<List<UserIndexViewModel>, int>> GetAllFiltered(UserFilterViewModel filter)
+        {
+            Expression<Func<ApplicationUser, bool>> where = course => true;
+            if (!string.IsNullOrEmpty(filter.Search))
+            {
+                //TODO: Search logic
+            }
+            return base.getAllFiltered(where: where, filter: filter, order: c => c.Id);
         }
     }
 }

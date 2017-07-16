@@ -9,6 +9,7 @@
                     cfg.AddProfile<ArticleProfile>();
                     cfg.AddProfile<CourseProfile>();
                     cfg.AddProfile<StudentCourseProfile>();
+                    cfg.AddProfile<ApplicationUserProfile>();
                 }
             );
         }

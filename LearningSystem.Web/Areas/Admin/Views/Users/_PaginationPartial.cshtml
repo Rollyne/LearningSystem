@@ -1,27 +1,27 @@
-﻿@model LearningSystem.Models.ViewModels.Filtering.CourseFilterViewModel
+﻿@model LearningSystem.Models.ViewModels.Filtering.UserFilterViewModel
 
 <ul class="pagination">
     @{
         var ajaxOptions = new AjaxOptions()
         {
             HttpMethod = "GET",
-            UpdateTargetId = "coursesList",
+            UpdateTargetId = "usersList",
             InsertionMode = InsertionMode.Replace
         };
         var pages = int.Parse(TempData["Pages"].ToString());
         for (int i = 1; i <= pages; i++)
         {
             Model.Page = i;
-            if ((int)TempData["CurrentPage"] == i)
+            if ((int) TempData["CurrentPage"] == i)
             {
                 <li class="active">
-                    @Ajax.ActionLink(i.ToString(), "_CoursesListPartial", Model, ajaxOptions)
+                    @Ajax.ActionLink(i.ToString(), "_UsersListPartial", Model, ajaxOptions )
                 </li>
             }
             else
             {
                 <li>
-                    @Ajax.ActionLink(i.ToString(), "_CoursesListPartial", Model, ajaxOptions)
+                    @Ajax.ActionLink(i.ToString(), "_UsersListPartial", Model, ajaxOptions)
                 </li>
             }
         }

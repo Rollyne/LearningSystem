@@ -269,13 +269,7 @@ namespace LearningSystem.Services
                 execution.Message = CrudMessages.NotFound("course");
             }
 
-            var result = repo.GetAll(where: r => r.CourseId == id, orderByKeySelector: i => i.StudentId,
-                select: r => new UserIndexViewModel
-                {
-                    CUsername = r.Student.User.CUsername,
-                    Id = r.StudentId,
-                    Name = r.Student.User.Name
-                });
+            var result = repo.GetAll<string, UserIndexViewModel>(where: r => r.CourseId == id, orderByKeySelector: i => i.StudentId);
 
             execution.Result = result;
 

@@ -6,34 +6,18 @@
 
 <h2>Index</h2>
 @{
-
-    var itemsPerPage = Request["ItemsPerPage"];
-    var search = Request["Search"];
-    var searchInName = Request["SearchInName"];
-    var searchInDescription = Request["SearchInDescription"];
+    var filter = new
+    {
+        ItemsPerPage = Request["ItemsPerPage"],
+        SearchInDescription = Request["SearchInDescription"],
+        Search = Request["Search"],
+        SearchInName = Request["SearchInName"]
+    };
 }
-@Html.Action("_SearchPartial", "Courses", new
-{
-    ItemsPerPage = itemsPerPage,
-    SearchInDescription = searchInDescription,
-    Search = search,
-    SearchInName = searchInName
-})
+@Html.Action("_SearchPartial", "Courses", filter)
 
 <div id="coursesList">
-    @Html.Action("_CoursesListPartial", new
-{
-    ItemsPerPage = itemsPerPage,
-    SearchInDescription = searchInDescription,
-    Search = search,
-    SearchInName = searchInName
-})
+    @Html.Action("_CoursesListPartial", filter)
 </div>
 
-@Html.Action("_PaginationPartial", new
-{
-    ItemsPerPage = itemsPerPage,
-    SearchInDescription = searchInDescription,
-    Search = search,
-    SearchInName = searchInName
-})
+@Html.Action("_PaginationPartial", filter)

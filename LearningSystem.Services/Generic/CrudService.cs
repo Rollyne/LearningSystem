@@ -10,12 +10,13 @@ using LearningSystem.Services.Tools.Messages;
 namespace LearningSystem.Services.Generic
 {
     public abstract class CrudService<TUnitOfWork, TModifyViewModel, TIndexViewModel, TDetailsViewModel, TFilterViewModel, TEntity>
-        : Service<TUnitOfWork>, ICrudService<TModifyViewModel, TIndexViewModel, TDetailsViewModel, TFilterViewModel, TEntity> 
+        : ReadService<TUnitOfWork, TDetailsViewModel, TIndexViewModel, TFilterViewModel, TEntity>,
+        ICrudService<TModifyViewModel, TIndexViewModel, TDetailsViewModel, TFilterViewModel, TEntity> 
         where TUnitOfWork : IUnitOfWork 
         where TEntity : class, new()
         where TFilterViewModel : IPagerFilter
     {
-        public CrudService(TUnitOfWork unitOfWork) : base(unitOfWork)
+        protected CrudService(TUnitOfWork unitOfWork) : base(unitOfWork)
         {
         }
 
@@ -49,24 +50,6 @@ namespace LearningSystem.Services.Generic
             };
         }
 
-        public abstract IExecutionResult<Tuple<List<TIndexViewModel>, int>> GetAllFiltered(TFilterViewModel filter);
-        protected IExecutionResult<Tuple<List<TIndexViewModel>, int>> getAllFiltered<TKey>(TFilterViewModel filter, Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TKey>> order)
-        {
-            var itemsAndPages = unitOfWork.GetRepository<TEntity>()
-                .GetAllPaged<TKey, TIndexViewModel>(
-                page: filter.Page,
-                itemsPerPage: filter.ItemsPerPage ?? ApplicationConstants.DefaultItemsPerPage,
-                where: where,
-                orderBy: order);
-            var result = new ExecutionResult<Tuple<List<TIndexViewModel>, int>>()
-            {
-                Result = itemsAndPages,
-                Message = "",
-                Succeded = true
-            };
-            return result;
-        }
-
         public IExecutionResult<TModifyViewModel> getForModification(Expression<Func<TEntity, bool>> where)
         {
             var repo = unitOfWork.GetRepository<TEntity>();
@@ -86,40 +69,6 @@ namespace LearningSystem.Services.Generic
 
             result.Succeded = true;
             result.Result = item;
-
-            return result;
-        }
-        
-        protected IExecutionResult<TDetailsViewModel> getDetails(Expression<Func<TEntity, bool>> where, Expression<Func<TEntity, TDetailsViewModel>> select = null, object mapperParameters = null)
-        {
-            var result = new ExecutionResult<TDetailsViewModel>();
-
-            TDetailsViewModel item = default(TDetailsViewModel);
-            if (select == null)
-            {
-                item = unitOfWork.GetRepository<TEntity>()
-                .FirstOrDefault<TDetailsViewModel>(
-                    where: where,
-                    mapperParameters: mapperParameters);
-            }
-            else
-            {
-                item = unitOfWork.GetRepository<TEntity>()
-                .FirstOrDefault(
-                    where: where,
-                    select: select);
-            }
-            if (item == null)
-            {
-                result.Succeded = false;
-                result.Message = CrudMessages.NotFound();
-                result.Result = default(TDetailsViewModel);
-
-                return result;
-            }
-            result.Result = item;
-            result.Message = "";
-            result.Succeded = true;
 
             return result;
         }
@@ -143,10 +92,6 @@ namespace LearningSystem.Services.Generic
         public virtual IExecutionResult<TModifyViewModel> GetForModification(Expression<Func<TEntity, bool>> @where)
             => this.getForModification(where);
 
-        public virtual IExecutionResult<TDetailsViewModel> GetDetails(Expression<Func<TEntity, bool>> @where,
-            Expression<Func<TEntity, TDetailsViewModel>> @select = null)
-            => this.getDetails(where, select);
-
         public IExecutionResult Delete(Expression<Func<TEntity, bool>> @where)
         {
             var repo = unitOfWork.GetRepository<TEntity>();
@@ -155,5 +100,11 @@ namespace LearningSystem.Services.Generic
 
             return this.Delete(item);
         }
+
+        public IExecutionResult<TIndexViewModel> GetDetails(Expression<Func<TEntity, bool>> @where, Expression<Func<TEntity, TIndexViewModel>> @select = null)
+        {
+            throw new NotImplementedException();
+        }
+        
     }
 }

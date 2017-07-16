@@ -62,6 +62,8 @@
     <Compile Include="CoursesService.cs" />
     <Compile Include="Generic\CrudService.cs" />
     <Compile Include="Generic\ICrudService.cs" />
+    <Compile Include="Generic\IReadService.cs" />
+    <Compile Include="Generic\ReadService.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="HomeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

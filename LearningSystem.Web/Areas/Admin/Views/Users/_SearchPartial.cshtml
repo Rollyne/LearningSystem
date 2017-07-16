@@ -1,13 +1,13 @@
 ﻿@using LearningSystem.Web.Extensions
-@model LearningSystem.Models.ViewModels.Filtering.CourseFilterViewModel
+@model LearningSystem.Models.ViewModels.Filtering.UserFilterViewModel
 
 
-@using (Html.BeginForm("Index", "Courses", FormMethod.Get)) 
+@using (Html.BeginForm("Index", "Users", FormMethod.Get)) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>CourseFilterViewModel</h4>
+        <h4>Search</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -17,7 +17,7 @@
                 @Html.ValidationMessageFor(model => model.Search, "", new { @class = "text-danger" })
             </div>
         </div>
-
+        
         <div class="form-group">
             @Html.LabelFor(model => model.ItemsPerPage, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -25,7 +25,27 @@
                 @Html.ValidationMessageFor(model => model.ItemsPerPage, "", new { @class = "text-danger" })
             </div>
         </div>
-
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.SearchInUsername, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.BooleanCheckbox(Model.SearchInUsername, "SearchInUsername")
+                    @Html.ValidationMessageFor(model => model.SearchInUsername, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(model => model.SearchInEmail, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.BooleanCheckbox(Model.SearchInEmail, "SearchInEmail")
+                    @Html.ValidationMessageFor(model => model.SearchInEmail, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        
         <div class="form-group">
             @Html.LabelFor(model => model.SearchInName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -35,17 +55,7 @@
                 </div>
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.SearchInDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.BooleanCheckbox(Model.SearchInDescription, "SearchInDescription")
-                    @Html.ValidationMessageFor(model => model.SearchInDescription, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
+        
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Search" class="btn btn-default" />

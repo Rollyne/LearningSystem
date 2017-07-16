@@ -17,7 +17,7 @@ namespace LearningSystem.Web.Controllers.Generic
 
     {
 
-        public ActionResult Index(TFilterViewModel filter)
+        public virtual ActionResult Index(TFilterViewModel filter)
         {
             var execution = Service.GetAllFiltered(filter);
 
@@ -26,8 +26,8 @@ namespace LearningSystem.Web.Controllers.Generic
 
             var model = execution.Result.Item1;
             var itemsPerPage = filter.ItemsPerPage ?? ApplicationConstants.DefaultItemsPerPage;
-            ViewBag.Pages = Math.Ceiling((double)execution.Result.Item2 / itemsPerPage);
-            ViewBag.CurrentPage = filter.Page == 0 ? 1 : filter.Page;
+            TempData["Pages"] = Math.Ceiling((double)execution.Result.Item2 / itemsPerPage);
+            TempData["CurrentPage"] = filter.Page == 0 ? 1 : filter.Page;
 
             return View(model);
         }

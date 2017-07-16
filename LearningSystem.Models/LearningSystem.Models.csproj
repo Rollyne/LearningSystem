@@ -90,6 +90,7 @@
     <Compile Include="EntityModels\Student.cs" />
     <Compile Include="EntityModels\StudentsCourses.cs" />
     <Compile Include="Attributes\FutureDateOnlyAttribute.cs" />
+    <Compile Include="Mapper\ApplicationUserProfile.cs" />
     <Compile Include="Mapper\ArticleProfile.cs" />
     <Compile Include="Mapper\AutoMapperModelsConfiguration.cs" />
     <Compile Include="Mapper\CourseProfile.cs" />

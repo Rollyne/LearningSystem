@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -19,5 +20,7 @@ namespace LearningSystem.Models.ViewModels.User
         [DisplayName("Birth date")]
         [DataType(DataType.Date)]
         public DateTime? BirthDate { get; set; }
+
+        public IEnumerable<string> Roles { get; set; }
     }
 }

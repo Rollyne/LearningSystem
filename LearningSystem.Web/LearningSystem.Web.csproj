@@ -214,6 +214,7 @@
     <Compile Include="Controllers\Generic\ServiceController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Extensions\HtmlHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -249,6 +250,9 @@
     <Content Include="Areas\Admin\Views\CoursesManage\Details.cshtml" />
     <Content Include="Areas\Blog\Views\Articles\Edit.cshtml" />
     <Content Include="Areas\Blog\Views\Articles\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_UsersListPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_SearchPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_PaginationPartial.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
